@@ -1,0 +1,25 @@
+{
+   "protocol": "http://lightningPaywall.app/protocol",
+   "types": {
+     "content": {
+       "schema": "content",
+       "dataFormats": ["application/json"]
+     }
+   },
+   "structure": {
+     "content": {
+       "$actions": [
+         {
+           "who": "owner",
+           "can": "write"
+         },
+         {
+            "who": "anyone",
+            "can": "read",
+            "fields": ["id", "title"]
+          }
+       ]
+     }
+   }
+ }
+

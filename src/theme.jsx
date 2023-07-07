@@ -3,7 +3,10 @@ import WebFont from "webfontloader";
 
 WebFont.load({
   google: {
-    families: ["IBM Plex Mono:300,400,500,600,700,800,700i,800i"],
+    families: [
+      "IBM Plex Mono:300,400,500,600,700,800,700i,800i",
+      "IBM Plex Sans:300,400,500,600,700,800,700i,800i",
+    ],
   },
 });
 
