@@ -13,6 +13,9 @@ import {
 
 import React, { useState } from 'react'
 
+import theme from "../theme";
+
+
 const DIDResolver = () => {
     const [did, setDid] = useState("");
 
@@ -20,6 +23,10 @@ const DIDResolver = () => {
       const clipboard = await navigator.clipboard.readText();
       setDid(clipboard);
     }
+
+    const styles = theme.styles.global;
+
+
   return (
     <Flex
         padding="2em"
@@ -36,14 +43,14 @@ const DIDResolver = () => {
             onChange={(e) => setDid(e.target.value)}
             placeholder="Enter a DID..."
             fontFamily={"IBM Plex Mono"}
-            _focus={{ borderColor: "#23E5F1" }}
+            _focus={{ borderColor: styles.brand.cyan}}
             border="1px solid lightgray"
           />
           <InputRightElement>
             <IconButton
               variant="ghost"
-              _hover={{ background: "none", color: "#23E5F1" }}
-              color="#fff"
+              _hover={{ background: "none", color: styles.brand.cyan }}
+              color={styles.body.primaryFill}
               aria-label="Paste from clipboard"
               icon={<CopyIcon />}
               onClick={handleCopy}
@@ -52,8 +59,7 @@ const DIDResolver = () => {
         </InputGroup>
         <Box h="1em"></Box>
         <Button
-          _hover={{ background: "#23E5F1", transition: "200ms ease" }}
-          size="lg"
+          variant="secondary"
         >
           Resolve Content
         </Button>

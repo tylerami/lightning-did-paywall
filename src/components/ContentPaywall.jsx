@@ -17,6 +17,7 @@ import React, { useState } from "react";
 import lightningLogo from "../assets/lightningLogo.png";
 import { createInvoice, verifiyInvoice } from "../util/lightningInvoiceService";
 import QRCode from "qrcode.react";
+import theme from "../theme";
 
 const ContentPaywall = ({ priceInSats }) => {
   if (!priceInSats) priceInSats = 500;
@@ -33,6 +34,7 @@ const ContentPaywall = ({ priceInSats }) => {
     setInvoice(invoice);
     onOpen();
   }
+  const styles = theme.styles.global;
 
   return (
     <Flex
@@ -77,12 +79,13 @@ const ContentPaywall = ({ priceInSats }) => {
           w={"20em"}
           _hover={{ cursor: "pointer", filter: "brightness(140%)" }}
           fontWeight={500}
-          color="#23E5F1"
+          color={styles.brand.cyan}
           size="2xl"
         >
           {`Price: ${priceInSats} sats`}
         </Heading>
         <Button
+        variant="primary"
         onClick={handleCreateInvoice}
           leftIcon={
             <Image
@@ -94,9 +97,6 @@ const ContentPaywall = ({ priceInSats }) => {
           }
           size="lg"
           w="100%"
-          _hover={{ textDecoration: "underline", filter: "brightness(120%);" }}
-          fontSize="2em"
-          background="#FFEC19"
           alignSelf={"center"}
         >
           Unlock Now
