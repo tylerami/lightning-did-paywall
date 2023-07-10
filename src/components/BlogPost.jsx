@@ -2,7 +2,12 @@ import { Box, Flex, Heading } from "@chakra-ui/react";
 import React from "react";
 import MultilineText from "./MultilineText";
 
+import theme from "../theme.jsx";
+
 const BlogPost = ({ content }) => {
+
+  const styles = theme.styles.global;
+
   return (
     <Flex
       padding="2em"
@@ -19,7 +24,7 @@ const BlogPost = ({ content }) => {
       <Box h='3em' />
       <MultilineText 
         fontFamily={"IBM Plex Sans"}
-        color={"#eeeeeeee"}
+        color={styles.body.secondaryFill}
         text={content.body}
       />
      

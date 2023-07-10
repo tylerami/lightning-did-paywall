@@ -6,7 +6,6 @@ import {
   IconButton,
   Input,
   Switch,
-  Text,
   Textarea,
   Tooltip,
   Modal,
@@ -22,6 +21,7 @@ import {
 import React, { useState } from "react";
 import { getDid, writeContent } from "../util/didService.js";
 import { CopyIcon } from "@chakra-ui/icons";
+import theme from "../theme.jsx";
 
 const CreatePostPage = () => {
   const [title, setTitle] = useState("");
@@ -47,6 +47,8 @@ const CreatePostPage = () => {
     }
   }
 
+  const styles = theme.styles.global;
+
   return (
     <Flex
       alignSelf={"center"}
@@ -65,10 +67,19 @@ const CreatePostPage = () => {
       >
         <Heading size="2xl">Content Creator</Heading>
         <Box h="0.5em"></Box>
+      
         <Flex alignItems={"center"}>
-          <Text size="sm" color={"#23E5F1"} fontWeight={"200"}>
-            {getDid().split("-").at(0)}
-          </Text>
+          
+          <Input
+            value={getDid().split("-").at(0)}
+            color={styles.brand.cyan}
+            width="100%"
+            size="lg"
+            border="1px solid #525252"
+            _focus={{ borderColor: styles.brand.cyan }}
+            readOnly
+          />
+          <Box w="0.5em"></Box>
           <Tooltip
             label={hasCopied ? "Copied" : "Copy to clipboard"}
             placement="top"
@@ -90,7 +101,7 @@ const CreatePostPage = () => {
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Title..."
           fontFamily={"IBM Plex Mono"}
-          _focus={{ borderColor: "#23E5F1" }}
+          _focus={{ borderColor: styles.brand.cyan }}
           border="1px solid lightgray"
         />
         <Box h={"2em"} />
@@ -101,7 +112,7 @@ const CreatePostPage = () => {
           onChange={(e) => setSubtitle(e.target.value)}
           placeholder="Subtitle..."
           fontFamily={"IBM Plex Mono"}
-          _focus={{ borderColor: "#23E5F1" }}
+          _focus={{ borderColor: styles.brand.cyan }}
           border="1px solid lightgray"
         />
         <Box h={"3em"} />
@@ -110,11 +121,11 @@ const CreatePostPage = () => {
           value={body}
           p={"2rem"}
           size="lg"
-          color="#eeeeeeee"
+          color= {styles.body.secondaryFill}
           onChange={(e) => setBody(e.target.value)}
           placeholder="Body..."
           fontFamily={"IBM Plex Mono"}
-          _focus={{ borderColor: "#23E5F1" }}
+          _focus={{ borderColor: styles.brand.cyan }}
           border="1px solid lightgray"
         />
         <Box h={"1em"} />
@@ -143,8 +154,7 @@ const CreatePostPage = () => {
 
         <Button
           onClick={handlePublish}
-          _hover={{ background: "#23E5F1", transition: "200ms ease" }}
-          size="lg"
+          variant="secondary"
         >
           Publish
         </Button>
