@@ -28,7 +28,7 @@ const ViewPostsPage = () => {
       padding={"2em"}
     >
       <DIDResolver handleResolve={handleResolve} />
-      <Box h="3em"></Box>
+      <Box h="3em" borderBottom="solid 1px #444"></Box>
       {paywall ? <ContentPaywall /> : <BlogPost content={content} />}
     </Flex>
   );

@@ -3,6 +3,7 @@ import React from "react";
 import lightningLogo from "../assets/lightningLogo.png";
 import person from "../assets/person.png";
 import { Link, useLocation } from "react-router-dom";
+import theme from "../theme";
 
 const NavBar = () => {
   const tabs = [
@@ -15,10 +16,12 @@ const NavBar = () => {
       path: "/createPost",
     },
   ];
+  const styles = theme.styles.global;
 
   return (
     <Flex
-      borderBottom={"0.5px solid #444"}
+      borderBottom={"0.5px solid"}
+      borderColor={styles.brand.yellow}
       width={"100%"}
       height="6em"
       alignItems={"center"}

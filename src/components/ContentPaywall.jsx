@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import lightningLogo from "../assets/lightningLogo.png";
-import { createInvoice, verifyInvoice } from "../util/lightningInvoiceService";
+import { createInvoice, verifyInvoiceAndRegisterIfPaid } from "../util/lightningInvoiceService";
 import QRCode from "qrcode.react";
 import theme from "../theme";
 
@@ -40,7 +40,6 @@ const ContentPaywall = ({ priceInSats }) => {
     <Flex
       padding="2em"
       borderRadius="0.2em"
-      border="0.5px solid #444"
       width="100%"
       direction={"column"}
     >
@@ -49,26 +48,24 @@ const ContentPaywall = ({ priceInSats }) => {
       </Heading>
       <Box height="2em"></Box>
 
-
       <Modal size="xl"  isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay  width="200em"/>
+        <ModalOverlay  width="150em"/>
         <ModalContent  
-          width="200em" 
+          width="150em" 
           background={"black"}
           border="solid 1.5px #fff"
           borderRadius="0"
           boxShadow= "1px 1px 0px 0px #FFFFFF, 2px 2px 0px 0px #FFFFFF, 3px 3px 0px 0px #FFFFFF, 4px 4px 0px 0px #FFFFFF, 5px 5px 0px 0px #FFFFFF"
-
         >
           <ModalHeader>Lightning Invoice</ModalHeader>
           <ModalCloseButton />
           <ModalBody p="5em" display={"flex"} justifyContent={"center"}>
             {invoice?.paymentRequest ? 
-           <QRCode size={"300"} value={invoice?.paymentRequest} /> : null}
+           <QRCode size={"150"} value={invoice?.paymentRequest} /> : null}
           </ModalBody>
           <ModalFooter display={"flex"} flexDirection={"column"} justifyContent={"center"}>
             <Button mb="2em" size='lg' colorScheme="twitter" mr={3} onClick={ async() => {
-              if (await verifyInvoice(invoice)) { 
+              if (await verifyInvoiceAndRegisterIfPaid(invoice)) { 
                 setpaymentReceived("Payment Received");
               } else {
                 setpaymentReceived("Payment Failed");

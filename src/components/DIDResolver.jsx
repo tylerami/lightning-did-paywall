@@ -31,7 +31,6 @@ const DIDResolver = () => {
     <Flex
         padding="2em"
         borderRadius="0.2em"
-        border="0.5px solid #444"
         width="100%"
         direction={"column"}
       >

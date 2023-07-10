@@ -4,7 +4,7 @@ import person from "../assets/person.png"
 
 import theme from "../theme";
 import { getDid } from "../util/didService";
-import { CopyIcon } from "@chakra-ui/icons";
+import { CopyIcon, EditIcon } from "@chakra-ui/icons";
 
 const Profile = ({  }) => {
     const styles = theme.styles.global;
@@ -32,8 +32,11 @@ const Profile = ({  }) => {
             >
                 <Image src={person} w={32}/>
                 <Box h="2em"/>
-                <Heading size="2xl" >{userDisplayName}</Heading>
-                <Box h="1em"/>
+                <Flex >
+                    <Heading size="2xl" >{userDisplayName}</Heading>
+                    <EditIcon ml="2em" alignSelf="flex-end" position="relative" bottom={1} boxSize={8}/>
+                </Flex>
+                <Box h="1.5em"/>
                 <InputGroup size="md">
                     <Input
                         value={getDid().split("-").at(0)}
@@ -64,7 +67,6 @@ const Profile = ({  }) => {
       
                 <Text borderBottom="solid 2px" pb={"2em"} borderBottomColor={styles.brand.yellow} >Bio goes here</Text>
                 <Box h="2em"/>
-
                 { content.length===0 ?
                     <Flex mt="4em" alignItems="center" textAlign="center" direction="column">
                         <Heading size="xl" >{"No content to show."}</Heading>
