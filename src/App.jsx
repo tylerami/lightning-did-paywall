@@ -7,9 +7,19 @@ import ViewPostsPage from "./pages/ViewPostsPage";
 import Profile from "./pages/Profile";
 
 function App() {
+  //TODO(ailany): change to getProfile(did);
+  const profile = null; 
   return (
     <Flex direction={"column"}>
       <NavBar />
+      {()=>{
+        if (!profile) {
+          return(
+            <>hi</>
+          );
+        }
+      }
+      }
       <Routes>
         <Route path="/" element={<Navigate to="/createPost" />} />
         <Route path="/createPost"  element={<CreatePostPage/>}/>
