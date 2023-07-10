@@ -1,6 +1,7 @@
 import { Box, Flex, Heading, Image, Spacer } from "@chakra-ui/react";
 import React from "react";
 import lightningLogo from "../assets/lightningLogo.png";
+import person from "../assets/person.png";
 import { Link, useLocation } from "react-router-dom";
 
 const NavBar = () => {
@@ -30,6 +31,7 @@ const NavBar = () => {
       ))}
       <Spacer />
       <Box w={"5em"}></Box>
+      <Link to="/profile" > <Image mr="2em" src={person} w={12} _hover={{background:"transparent", filter:"brightness(250%)"}}/>  </Link>
     </Flex>
   );
 };
@@ -65,7 +67,7 @@ const NavBarButton = ({ text, path }) => {
           }}
           boxSizing="border-box"
         >
-          <Heading size="lg"> {text}</Heading>
+          <Heading size="md"> {text}</Heading>
         </Flex>
       </Link>
     </Box>

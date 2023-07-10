@@ -19,7 +19,7 @@ const theme = extendTheme({
       },
       body: {
         color: "#FFEC19",
-        background: "#1C1C1C",
+        background: "#000000",
         primaryFill: "#FFFFFF",
         secondaryFill: "#EEEEEE"
       },
@@ -30,33 +30,43 @@ const theme = extendTheme({
     body: "IBM Plex Mono",
   },
   components: {
+    Box:{
+      defaultProps:{
+        border:"none"
+      }
+    },
     Button:{
-        // 1. We can update the base styles
-        baseStyle: {
-          fontWeight: "bold", // Normally, it is "semibold"
+      baseStyle: {
+        fontWeight: "bold", // Normally, it is "semibold"
+      },
+      variants: {
+        "primary": {
+          bg: "transparent",
+          color:"#FFEC19",
+          boxShadow: "1px 1px 0px 0px #FFEC19, 2px 2px 0px 0px #FFEC19, 3px 3px 0px 0px #FFEC19, 4px 4px 0px 0px #FFEC19, 5px 5px 0px 0px #FFEC19",
+          border: "solid 1.5px #FFEC19",
+          borderRadius: "0",
+          _hover:{filter: "brightness(250%)", boxShadow: "1px 1px 0px 0px #FFEC19, 2px 2px 0px 0px #FFEC19" },
         },
-        sizes: {
-        },
-        // 3. We can add a new visual variant
-        variants: {
-          "primary": {
-            bg: "#FFEC19",
-            color:"#000",
-            _hover: {filter: "brightness(150%);"}
-          },
-          "secondary": {
-            bg: "#FFFFFF",
-            color: "#1C1C1C",
-            _hover:{ background: "#23E5F1", transition: "200ms ease" }
-          },
-        },
-        // 6. We can overwrite defaultProps
-        defaultProps: {
-          size: "lg", // default is md
-          variant: "primary"
+        "secondary": {
+          bg: "transparent",
+          color: "#FFFFFF",
+          boxShadow: "1px 1px 0px 0px #FFFFFF, 2px 2px 0px 0px #FFFFFF, 3px 3px 0px 0px #FFFFFF, 4px 4px 0px 0px #FFFFFF, 5px 5px 0px 0px #FFFFFF",
+          border: "solid 1.5px #FFFFFF",
+          borderRadius: "0",
+          _hover:{color: "#23E5F1", border:"solid 1.5px #23E5F1", boxShadow: "1px 1px 0px 0px #23E5F1, 2px 2px 0px 0px #23E5F1" },
         },
       },
+      defaultProps: {
+        size: "lg", // default is md
+      },
+    },
+    ModalContent:{
+      defaultProps:{
+        
+      }
     }
+  },
 });
 
 export default theme;

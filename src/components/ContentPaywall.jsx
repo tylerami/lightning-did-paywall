@@ -50,9 +50,16 @@ const ContentPaywall = ({ priceInSats }) => {
       <Box height="2em"></Box>
 
 
-      <Modal size="xl" isOpen={isOpen} onClose={onClose}>
+      <Modal size="xl"  isOpen={isOpen} onClose={onClose}>
         <ModalOverlay  width="200em"/>
-        <ModalContent width="200em" background={"black"}>
+        <ModalContent  
+          width="200em" 
+          background={"black"}
+          border="solid 1.5px #fff"
+          borderRadius="0"
+          boxShadow= "1px 1px 0px 0px #FFFFFF, 2px 2px 0px 0px #FFFFFF, 3px 3px 0px 0px #FFFFFF, 4px 4px 0px 0px #FFFFFF, 5px 5px 0px 0px #FFFFFF"
+
+        >
           <ModalHeader>Lightning Invoice</ModalHeader>
           <ModalCloseButton />
           <ModalBody p="5em" display={"flex"} justifyContent={"center"}>
