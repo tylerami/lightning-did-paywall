@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import lightningLogo from "../assets/lightningLogo.png";
-import { createInvoice, verifyInvoiceAndRegisterIfPaid } from "../util/lightningInvoiceService";
+import { createInvoice, verifiyInvoiceAndRegisterIfPaid } from "../util/lightningInvoiceService";
 import QRCode from "qrcode.react";
 import theme from "../theme";
 
@@ -64,8 +64,10 @@ const ContentPaywall = ({ priceInSats }) => {
            <QRCode size={"150"} value={invoice?.paymentRequest} /> : null}
           </ModalBody>
           <ModalFooter display={"flex"} flexDirection={"column"} justifyContent={"center"}>
-            <Button mb="2em" size='lg' colorScheme="twitter" mr={3} onClick={ async() => {
-              if (await verifyInvoiceAndRegisterIfPaid(invoice)) { 
+
+            <Button variant="primary" mb="2em" size='lg' mr={3} onClick={ async() => {
+              if (await verifiyInvoiceAndRegisterIfPaid(invoice)) { 
+
                 setpaymentReceived("Payment Received");
               } else {
                 setpaymentReceived("Payment Failed");
