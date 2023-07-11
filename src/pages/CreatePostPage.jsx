@@ -19,7 +19,7 @@ import {
   useClipboard,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { getDid, writeContent } from "../util/didService.js";
+import { getDid, writeContent } from "../util/dwnService.js";
 import { CopyIcon } from "@chakra-ui/icons";
 import theme from "../theme.jsx";
 

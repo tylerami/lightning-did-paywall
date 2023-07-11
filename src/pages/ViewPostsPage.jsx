@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import DIDResolver from "../components/DIDResolver";
 import BlogPost from "../components/BlogPost";
 import ContentPaywall from "../components/ContentPaywall";
-import {getPaywalledContent } from "../util/didService";
+import {getPaywalledContent } from "../util/dwnService";
 
 const ViewPostsPage = () => {
 

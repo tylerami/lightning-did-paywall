@@ -1,25 +1,48 @@
 {
-   "protocol": "http://lightningPaywall.app/protocol",
-   "types": {
-     "content": {
-       "schema": "content",
-       "dataFormats": ["application/json"]
-     }
-   },
-   "structure": {
-     "content": {
-       "$actions": [
-         {
-           "who": "owner",
-           "can": "write"
-         },
-         {
-            "who": "anyone",
-            "can": "read",
-            "fields": ["id", "title"]
-          }
-       ]
-     }
-   }
- }
-
+  "protocol": "https://lightningPaywall.app/schemas/protocol",
+  "types": {
+    "content": {
+      "schema": "https://lightningPaywall.app/schemas/content",
+      "dataFormats": ["application/json"]
+    },
+    "contentMetadata": {
+      "schema": "https://lightningPaywall.app/schemas/content",
+      "dataFormats": ["application/json"]
+    },
+    "video": {
+      "schema": "https://lightningPaywall.app/schemas/video",
+      "dataFormats": ["application/json"]
+    },
+    "subscriber": {
+      "schema": "https://lightningPaywall.app/schemas/subcriber",
+      "dataFormats": ["application/json"]
+    },
+    "paywall": {
+      "schema": ["https://schema-examples.org/paywall"],
+      "dataFormats": ["application/json"]
+    }
+  },
+  "structure": {
+    "content": {
+      "contentMetadata": {
+        "$actions": [
+          { "who": "anyone", "can": "read" },
+          { "who": "anyone", "can": "query" },
+          { "who": "anyone", "can": "write" }
+        ]
+      },
+      "$actions": [
+        {
+          "who": "recipient",
+          "of": "content/subscriber",
+          "can": "query"
+        },
+        {
+          "who": "recipient",
+          "of": "content/subscriber",
+          "can": "read"
+        }
+      ]
+    }
+  }
+}
