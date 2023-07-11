@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -17,15 +17,17 @@ import person from "../assets/person.png";
 
 import theme from "../theme";
 import { getDid } from "../util/dwnService";
-import { CopyIcon, EditIcon } from "@chakra-ui/icons";
+import { ArrowRightIcon, CopyIcon, EditIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
+import { getProfile } from "../util/profileService";
 
 const Profile = ({ profile, openEditProfileModal }) => {
-  const styles = theme.styles.global;
-  const content = [];
-  const displayName = profile?.username;
-  const userDid = getDid();
-  const userDisplayName = displayName || userDid.substring(0, 20) + "...";
+    const styles = theme.styles.global;
+    const userDid = getDid();
+
+    const [ contentList, setContentList ] = useState([]);
+    const displayName = profile?.username;
+    const userDisplayName = displayName || userDid.substring(0, 20) + "...";
 
   const { hasCopied, onCopy } = useClipboard(getDid());
 
@@ -97,28 +99,53 @@ const Profile = ({ profile, openEditProfileModal }) => {
           {profile?.bio ?? "Bio goes here"}
         </Text>
         <Box h="2em" />
+        <Heading w="50%" pb="1em" borderBottom="solid 1px" borderColor={styles.brand.yellow}>Blog posts</Heading>
+                <Box h="2em"/>
 
-        {content.length === 0 ? (
-          <Flex
-            mt="4em"
-            alignItems="center"
-            textAlign="center"
-            direction="column"
-          >
-            <Heading size="xl">{"No content to show."}</Heading>
-            <Box h="2em" />
-            <Link to="/createPost">
-              <Button variant="primary" maxW="max-content">
-                Create your first post
-              </Button>
-            </Link>
-          </Flex>
-        ) : (
-          <></>
-        )}
-      </Flex>
-    </Flex>
-  );
+                <Flex p="1em" mb="2em" border="solid 1px" borderColor={styles.brand.yellow} boxShadow="1px 1px 0px 0px #FFEC19, 2px 2px 0px 0px #FFEC19, 3px 3px 0px 0px #FFEC19, 4px 4px 0px 0px #FFEC19, 5px 5px 0px 0px #FFEC19">
+                    <Flex flexDirection="column">
+                        <Heading size="lg" color={styles.body.primaryFill}>Title</Heading>
+                        <Heading size="sm" p="8px 0" color={styles.brand.yellow}>500 sats</Heading>
+                        <Text color={styles.body.primaryFill}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis ... </Text>
+                    </Flex>
+                    <ArrowRightIcon color={styles.brand.yellow} alignSelf="center"/>
+                </Flex>
+                
+                <Flex p="1em" mb="2em" border="solid 1px" borderColor={styles.brand.yellow} boxShadow="1px 1px 0px 0px #FFEC19, 2px 2px 0px 0px #FFEC19, 3px 3px 0px 0px #FFEC19, 4px 4px 0px 0px #FFEC19, 5px 5px 0px 0px #FFEC19">
+                    <Flex flexDirection="column">
+                        <Heading size="lg" color={styles.body.primaryFill}>Title</Heading>
+                        <Heading size="sm" p="8px 0" color={styles.brand.yellow}>500 sats</Heading>
+                        <Text color={styles.body.primaryFill}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis ... </Text>
+                    </Flex>
+                    <ArrowRightIcon color={styles.brand.yellow} alignSelf="center"/>
+                </Flex>
+                <Flex p="1em" mb="2em" border="solid 1px" borderColor={styles.brand.yellow} boxShadow="1px 1px 0px 0px #FFEC19, 2px 2px 0px 0px #FFEC19, 3px 3px 0px 0px #FFEC19, 4px 4px 0px 0px #FFEC19, 5px 5px 0px 0px #FFEC19">
+                    <Flex flexDirection="column">
+                        <Heading size="lg" color={styles.body.primaryFill}>Title</Heading>
+                        <Heading size="sm" p="8px 0" color={styles.brand.yellow}>500 sats</Heading>
+                        <Text color={styles.body.primaryFill}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis ... </Text>
+                    </Flex>
+                    <ArrowRightIcon color={styles.brand.yellow} alignSelf="center"/>
+                </Flex>
+                <Button  variant="primary" maxW="max-content">View more</Button>
+                
+                <Heading>Podcasts</Heading>
+                { contentList.length===0 ?
+                    <Flex mt="4em" alignItems="center" textAlign="center" direction="column">
+                        <Heading size="xl" >{"No content to show."}</Heading>
+                        <Box h="2em"/>
+                        <Link to="/createPost">
+                            <Button  variant="primary" maxW="max-content">Create your first post</Button>
+                        </Link>
+                    </Flex>
+                :
+                    contentList.map(post=>
+                        <></> )
+                }
+            </Flex>
+        </Flex>
+        
+    );
 };
 
 export default Profile;
