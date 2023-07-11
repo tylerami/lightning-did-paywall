@@ -1,4 +1,12 @@
 import {
+  audioSchema,
+  contentSchema,
+  metadataSchema,
+  paywallSchema,
+  protocolUri,
+  subscriptionSchema,
+} from "../schemas/paywallProtocol.js";
+import {
   baseUrl,
   web5,
   userDid,
@@ -37,14 +45,18 @@ export async function publishContent({
       },
       message: {
         published: false,
-        schema: "content",
-        protocol: `${baseUrl}/protocol`,
+        schema: contentSchema,
+        protocol: protocolUri,
         protocolPath: "content",
-        format: "application/json",
+        dataFormat: "application/json",
       },
     });
 
-  console.log(contentRecord, contentStatus);
+  console.log("content record: ", contentRecord, contentStatus);
+  if (!contentRecord) {
+    console.log("Error creating content record");
+    return;
+  }
 
   // create the metadata record
   const { record: metadataRecord, status: metadataStatus } =
@@ -56,15 +68,16 @@ export async function publishContent({
       },
       message: {
         published: true,
+        contextId: contentRecord.id,
         parentId: contentRecord.id,
-        schema: "metadata",
-        protocol: `${baseUrl}/protocol`,
+        schema: metadataSchema,
+        protocol: protocolUri,
         protocolPath: "content/metadata",
-        format: "application/json",
+        dataFormat: "application/json",
       },
     });
 
-  console.log(metadataRecord, metadataStatus);
+  console.log("metadata record: ", metadataRecord, metadataStatus);
 
   const profile = await getProfile();
 
@@ -73,19 +86,21 @@ export async function publishContent({
     await web5.dwn.records.create({
       data: {
         satsAmount: paywall.satsAmount,
-        lightningAddress: paywall.lightningAddress ?? profile.lightningAddress,
+        lightningAddress: paywall.lightningAddress ?? profile?.lightningAddress,
       },
       message: {
         published: true,
         parentId: contentRecord.id,
-        schema: "paywall",
-        protocol: `${baseUrl}/protocol`,
+        schema: paywallSchema,
+        protocol: protocolUri,
         protocolPath: "content/paywall",
-        format: "application/json",
+        dataFormat: "application/json",
       },
     });
 
-  console.log(paywallRecord, paywallStatus);
+  console.log("paywall record: ", paywallRecord, paywallStatus);
+
+  if (!audio) return;
 
   // create the audio record
   const { record: audioRecord, status: audioStatus } =
@@ -94,31 +109,36 @@ export async function publishContent({
       message: {
         published: false,
         parentId: contentRecord.id,
-        schema: "audio",
-        protocol: `${baseUrl}/protocol`,
+        schema: audioSchema,
+        protocol: protocolUri,
         protocolPath: "content/audio",
-        format: "audio/mp3",
+        dataFormat: "audio/mp3",
       },
     });
 
-  console.log(audioRecord, audioStatus);
+  console.log("audio record: ", audioRecord, audioStatus);
 }
 
 export async function getAllContentMetadata(authorDid) {
-  const records = await web5.dwn.records.query({
+  const records = await queryRecords({
+    schema: metadataSchema,
     from: authorDid,
-    message: {
-      filter: {
-        protocolPath: "content/metadata",
-        protocol: `${baseUrl}/protocol`,
-        schema: "metadata",
-        dataFormat: "application/json",
-      },
-    },
   });
-  console.log(records);
 
-  return Promise.all(records.map(async (rec) => await flattenRecord(rec)));
+  return await Promise.all(
+    records.map(async (rec) => {
+      const paywallRecord = await queryRecords({
+        schema: paywallSchema,
+        parentId: rec.parentId,
+        from: authorDid,
+      });
+
+      return {
+        ...(await flattenRecord(rec)),
+        paywall: await flattenRecord(paywallRecord?.at(0)),
+      }
+    })
+  );
 }
 
 export async function getContentIfPaid(contentId, authorDid) {
@@ -132,9 +152,7 @@ export async function getContentIfPaid(contentId, authorDid) {
 
   // get the audio record
   const audioRecords = await queryRecords({
-    protocol: `${baseUrl}/protocol`,
-    protocolPath: "content/audio",
-    schema: "audio",
+    schema: audioSchema,
     parentId: contentId,
     from: authorDid,
   });
@@ -160,17 +178,12 @@ export async function registerSubscription({ contentId, authorDid, invoice }) {
     message: {
       parentId: contentId,
       recipient: userDid,
-      schema: "subscription",
-      protocol: `${baseUrl}/protocol`,
-      protocolPath: "subscription",
-      format: "application/json",
+      schema: subscriptionSchema,
     },
   });
 
   const { status: receiptStatus } = await record.send(userDid);
-
-  console.log(status);
-  console.log(receiptStatus);
+  console.log("register subscription status: ", status, receiptStatus);
 
   return status;
 }

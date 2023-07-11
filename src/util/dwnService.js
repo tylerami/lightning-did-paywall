@@ -1,10 +1,8 @@
 import { Web5 } from "@tbd54566975/web5";
-import paywallProtocol from "../schemas/paywallProtocol.json";
+import { paywallProtocol, protocolUri } from "../schemas/paywallProtocol";
 
 // Create a new instance of Web5
 export const { web5, did: userDid } = await Web5.connect();
-
-export const baseUrl = "https://lightningPaywall.app";
 
 export function writeContent() {
   return;
@@ -18,7 +16,7 @@ async function configureProtocol() {
   const { protocols, status } = await web5.dwn.protocols.query({
     message: {
       filter: {
-        protocol: `${baseUrl}/protocol`,
+        protocol:  protocolUri,
       },
     },
   });
@@ -59,20 +57,30 @@ export async function flattenRecord(record) {
   };
 }
 
-export async function queryRecords({ protocol, schema, dataFormat, from }) {
+export async function queryRecords({
+  schema,
+  dataFormat = "application/json",
+  from,
+  parentId,
+}) {
   var filter = {
-    protocol,
+    protocol: protocolUri,
     schema,
     dataFormat,
   };
-  console.log(filter);
+  if (parentId) {
+    filter.parentId = parentId;
+    filter.contextId = parentId;
+  }
+
+  console.log("Querying with filter: ", filter);
   var query = {
     message: {
       filter,
     },
   };
 
-  if (from) {
+  if (from && from !== userDid) {
     query.from = from;
   }
 
@@ -99,7 +107,6 @@ export async function upsertRecord({
       if (!recordNullValues) {
         data = removeNullProperties(data);
       }
-      console.log(data);
       response = await record.update({
         data: {
           ...existingData,
@@ -107,7 +114,6 @@ export async function upsertRecord({
         },
       });
     } else {
-      console.log(data);
       response = await record.update({
         data: data,
       });
@@ -117,9 +123,9 @@ export async function upsertRecord({
     response = await web5.dwn.records.create({
       data: data,
       message: {
-        published,
+        published: false,
         schema,
-        protocol,
+        protocol: protocol ?? protocolUri,
         protocolPath,
         format,
       },

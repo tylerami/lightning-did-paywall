@@ -1,4 +1,8 @@
 import {
+  profilePictureSchema,
+  profileSchema,
+} from "../schemas/paywallProtocol.js";
+import {
   baseUrl,
   flattenRecord,
   queryRecords,
@@ -13,10 +17,8 @@ export async function setProfile({ username, bio, lightningAddress }) {
       bio,
       lightningAddress,
     },
-    schema: "profile",
-    protocol: `${baseUrl}/protocol`,
+    schema: profileSchema,
     protocolPath: "profile",
-    format: "application/json",
     published: true,
   });
   return response;
@@ -26,10 +28,9 @@ export async function setProfilePicture({ binaryImage }) {
   const response = await upsertRecord({
     getExistingRecord: getProfilePictureRecord,
     data: binaryImage,
-    schema: "profilePicture",
-    protocol: `${baseUrl}/protocol`,
+    schema: profilePictureSchema,
     protocolPath: "profile/profilePicture",
-    format: "image/png",
+    dataFormat: "image/png",
     published: true,
   });
   return response;
@@ -49,10 +50,8 @@ export async function getProfilePicture(did) {
 
 async function getProfilePictureRecord(did) {
   const records = queryRecords({
-    protocol: `${baseUrl}/protocol`,
-    protocolPath: "profile/picture",
-    schema: "profile",
-    dataFormat: "application/json",
+    schema: profilePictureSchema,
+    dataFormat: "image/png",
     from: did,
   });
   return records?.at(0);
@@ -60,9 +59,7 @@ async function getProfilePictureRecord(did) {
 
 async function getProfileRecord(did) {
   const records = await queryRecords({
-    protocol: `${baseUrl}/protocol`,
-    schema: "profile",
-    dataFormat: "application/json",
+    schema: profileSchema,
     from: did,
   });
   return records?.at(0);
