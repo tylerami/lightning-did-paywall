@@ -1,48 +1,97 @@
 {
-  "protocol": "https://lightningPaywall.app/schemas/protocol",
+  "protocol": "https://lightningPaywall.app/protocol",
   "types": {
     "content": {
-      "schema": "https://lightningPaywall.app/schemas/content",
+      "schema": "content",
       "dataFormats": ["application/json"]
     },
-    "contentMetadata": {
-      "schema": "https://lightningPaywall.app/schemas/content",
+    "metadata": {
+      "schema": "contentMetadata",
       "dataFormats": ["application/json"]
     },
-    "video": {
-      "schema": "https://lightningPaywall.app/schemas/video",
-      "dataFormats": ["application/json"]
+    "audio": {
+      "schema": "audio",
+      "dataFormats": ["audio/mp3"]
     },
     "subscriber": {
-      "schema": "https://lightningPaywall.app/schemas/subcriber",
+      "schema": "subcriber",
       "dataFormats": ["application/json"]
     },
     "paywall": {
-      "schema": ["https://schema-examples.org/paywall"],
+      "schema": "paywall",
+      "dataFormats": ["application/json"]
+    },
+    "creatorProfile": {
+      "schema": "creatorProfile",
       "dataFormats": ["application/json"]
     }
   },
   "structure": {
-    "content": {
-      "contentMetadata": {
+    "profile": {
+      "$actions": [
+        { "who": "anyone", "can": "read" },
+        { "who": "author", "of": "profile", "can": "write" }
+      ],
+      "profilePicture": {
         "$actions": [
           { "who": "anyone", "can": "read" },
-          { "who": "anyone", "can": "query" },
-          { "who": "anyone", "can": "write" }
+          { "who": "author", "of": "profile", "can": "write" }
         ]
-      },
+      }
+    },
+    "content": {
       "$actions": [
         {
           "who": "recipient",
           "of": "content/subscriber",
-          "can": "query"
+          "can": "read"
         },
         {
-          "who": "recipient",
-          "of": "content/subscriber",
-          "can": "read"
+          "who": "anyone",
+          "can": "write"
         }
-      ]
+      ],
+      "metadata": {
+        "$actions": [
+          { "who": "anyone", "can": "read" },
+          { "who": "anyone", "can": "write" }
+        ]
+      },
+      "paywall": {
+        "$actions": [
+          { "who": "anyone", "can": "read" },
+          { "who": "anyone", "can": "write" }
+        ]
+      },
+      "audio": {
+        "$actions": [
+          {
+            "who": "recipient",
+            "of": "content/subscriber",
+            "can": "read"
+          },
+          {
+            "who": "author",
+            "of": "content",
+            "can": "write"
+          }
+        ]
+      },
+      "subscription": {
+        "$actions": [
+          {
+            "who": "author",
+            "of": "content",
+
+            "can": "write"
+          },
+          {
+            "who": "author",
+            "of": "content",
+            "can": "read"
+          }
+        ]
+      }
     }
   }
 }

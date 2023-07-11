@@ -1,135 +1,69 @@
-import { baseUrl, web5 } from "./dwnService";
+import {
+  baseUrl,
+  flattenRecord,
+  queryRecords,
+  upsertRecord,
+} from "./dwnService.js";
 
-export async function createProfile({ username, bio, lightningAddress }) {
-  const profileRecord = await getProfilePicture();
-  if (profileRecord) {
-    const response = await profileRecord.update({
-      data: {
-        username: username ?? profileRecord.username,
-        bio: bio ?? profileRecord.bio,
-        lightningAddress: lightningAddress ?? profileRecord.lightningAddress,
-      },
-      message: {
-        scheme: "profile",
-        format: "application/json",
-      },
-    });
-    console.log(response);
-  } else {
-    const response = await web5.dwn.records.create({
-      data: { username, bio, lightningAddress },
-      message: {
-        scheme: "profile",
-        format: "application/json",
-      },
-    });
-    console.log(response);
-  }
+export async function setProfile({ username, bio, lightningAddress }) {
+  const response = await upsertRecord({
+    getExistingRecord: getProfileRecord,
+    data: {
+      username,
+      bio,
+      lightningAddress,
+    },
+    schema: "profile",
+    protocol: `${baseUrl}/protocol`,
+    protocolPath: "profile",
+    format: "application/json",
+    published: true,
+  });
+  return response;
 }
 
-export async function createProfilePicture({ binaryImage }) {
-  const profileRecord = await getProfilePicture();
-  const request = {
-    data: {
-      binaryImage,
-    },
-    message: {
-      protocol: `${baseUrl}/schemas/protocol`,
-      protocolPath: "profile/profilePicture",
-      scheme: "profilePicture",
-      format: "application/json",
-    },
-  };
-
-  if (profileRecord) {
-    const response = await profileRecord.update(request);
-    console.log(response);
-  } else {
-    const response = await web5.dwn.records.create(request);
-    console.log(response);
-  }
+export async function setProfilePicture({ binaryImage }) {
+  const response = await upsertRecord({
+    getExistingRecord: getProfilePictureRecord,
+    data: binaryImage,
+    schema: "profilePicture",
+    protocol: `${baseUrl}/protocol`,
+    protocolPath: "profile/profilePicture",
+    format: "image/png",
+    published: true,
+  });
+  return response;
 }
 
-export async function publishContent({
-  title,
-  description,
-  components,
-  paywall,
-}) {
-  const { record, status } = await web5.dwn.records.create({
-    data: {
-      title,
-      description,
-    },
-    message: {
-      scheme: "content",
-      protocol: `${baseUrl}/schemas/protocol`,
-      protocolPath: "content",
-      format: "application/json",
-    },
-  });
-
-  const { paywallRecord, paywallStatus } = await web5.dwn.records.create({
-    data: {
-      satsAmount: paywall.satsAmount,
-      lightningAddress: paywall.lightningAddress,
-    },
-    parentId: record.id,
-    message: {
-      scheme: "content/paywall",
-      format: "application/json",
-    },
-  });
-
-  components.forEach(async (component) => {
-    const { componentRecord, componentStatus } = await web5.dwn.records.create({
-      data: {
-        binary: component.binary,
-        dataType: component.dataType,
-      },
-      parentId: record.id,
-      message: {
-        scheme: "content/component",
-        format: "image/jpeg",
-      },
-    });
-  });
+export async function getProfile(did) {
+  const profileRecord = await getProfileRecord(did);
+  return await flattenRecord(profileRecord);
 }
 
 export async function getProfilePicture(did) {
-  var query = {
-    message: {
-      filter: {
-        protocol: `${baseUrl}/schemas/protocol`,
-        schema: "profilePicture",
-        dataFormat: "image/jpeg",
-      },
-    },
-  };
+  const profilePictureRecord = await getProfilePictureRecord(did);
+  const profilePicture = await profilePictureRecord?.data?.blob();
 
-  if (did) {
-    query.from = did;
-  }
-
-  const profilePicture = (await web5.dwn.records.query(query)).first;
   return profilePicture;
 }
 
-export async function getProfileRecord(did) {
-  var query = {
-    message: {
-      filter: {
-        protocol: `${baseUrl}/schemas/protocol`,
-        schema: "profile",
-        dataFormat: "application/json",
-      },
-    },
-  };
+async function getProfilePictureRecord(did) {
+  const records = queryRecords({
+    protocol: `${baseUrl}/protocol`,
+    protocolPath: "profile/picture",
+    schema: "profile",
+    dataFormat: "application/json",
+    from: did,
+  });
+  return records?.at(0);
+}
 
-  if (did) {
-    query.from = did;
-  }
-
-  const profile = (await web5.dwn.records.query(query)).first;
-  return profile;
+async function getProfileRecord(did) {
+  const records = await queryRecords({
+    protocol: `${baseUrl}/protocol`,
+    schema: "profile",
+    dataFormat: "application/json",
+    from: did,
+  });
+  return records?.at(0);
 }
