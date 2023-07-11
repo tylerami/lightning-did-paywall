@@ -24,7 +24,8 @@ const Profile = ({}) => {
   const styles = theme.styles.global;
   const content = [];
   const displayName = null;
-  const userDisplayName = displayName || getDid().substring(0, 20) + "...";
+  const userDid = getDid();
+  const userDisplayName = displayName || userDid.substring(0, 20) + "...";
 
   const { hasCopied, onCopy } = useClipboard(getDid());
 
@@ -45,11 +46,14 @@ const Profile = ({}) => {
             >
                 <Image src={person} w={32}/>
                 <Box h="2em"/>
-                <Heading size="2xl" >{userDisplayName}</Heading>
+                <Flex>
+                    <Heading size="2xl" >{userDisplayName}</Heading> 
+                    <EditIcon alignSelf="flex-end" w={8} h={8}/>
+                </Flex>
                 <Box h="1em"/>
                 <InputGroup size="md">
                     <Input
-                        value={getDid().split("-").at(0)}
+                        value={userDid}
                         fontFamily={"IBM Plex Mono"}
                         _focus={{ borderColor: styles.brand.cyan}}
                         color={styles.brand.cyan}
@@ -74,7 +78,6 @@ const Profile = ({}) => {
                     </InputRightElement>
                 </InputGroup>
                 <Box h="1em"/>
-      
                 <Text borderBottom="solid 2px" pb={"2em"} borderBottomColor={styles.brand.yellow} >Bio goes here</Text>
                 <Box h="2em"/>
 

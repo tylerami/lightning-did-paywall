@@ -6,6 +6,9 @@ export const { web5, did: userDid } = await Web5.connect();
 
 export const baseUrl = "https://lightningPaywall.app";
 
+export function writeContent() {
+  return;
+}
 export function getDid() {
   return userDid;
 }
