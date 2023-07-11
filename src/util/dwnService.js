@@ -15,7 +15,7 @@ async function configureProtocol() {
   const { protocols, status } = await web5.dwn.protocols.query({
     message: {
       filter: {
-        protocol: `${baseUrl}/schemas/protocol`,
+        protocol: `${baseUrl}/protocol`,
       },
     },
   });
@@ -42,3 +42,91 @@ async function configureProtocol() {
 }
 
 configureProtocol();
+
+export async function flattenRecord(record) {
+  if (!record) return null;
+
+  const data = await record?.data?.json();
+  return {
+    id: record.id,
+    parentId: record.parentId,
+    authorDid: record.author,
+    recipientDid: record.recipient,
+    ...data,
+  };
+}
+
+export async function queryRecords({ protocol, schema, dataFormat, from }) {
+  var filter = {
+    protocol,
+    schema,
+    dataFormat,
+  };
+  console.log(filter);
+  var query = {
+    message: {
+      filter,
+    },
+  };
+
+  if (from) {
+    query.from = from;
+  }
+
+  const result = await web5.dwn.records.query(query);
+  return result?.records;
+}
+
+export async function upsertRecord({
+  getExistingRecord,
+  data,
+  schema,
+  protocol,
+  protocolPath,
+  published = false,
+  format = "application/json",
+  recordNullValues = false,
+}) {
+  const record = await getExistingRecord();
+
+  var response;
+  if (record) {
+    if (format === "application/json") {
+      const existingData = await record?.data?.json();
+      if (!recordNullValues) {
+        data = removeNullProperties(data);
+      }
+      console.log(data);
+      response = await record.update({
+        data: {
+          ...existingData,
+          ...data,
+        },
+      });
+    } else {
+      console.log(data);
+      response = await record.update({
+        data: data,
+      });
+    }
+    console.log("updating record with type: ", response, schema);
+  } else {
+    response = await web5.dwn.records.create({
+      data: data,
+      message: {
+        published,
+        schema,
+        protocol,
+        protocolPath,
+        format,
+      },
+    });
+    console.log("creating record with type: ", response, schema);
+  }
+  return response;
+}
+
+function removeNullProperties(obj) {
+  Object.keys(obj).forEach((key) => obj[key] == null && delete obj[key]);
+  return obj;
+}
