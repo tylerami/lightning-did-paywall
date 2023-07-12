@@ -140,6 +140,31 @@ export async function getAllContentMetadataFromWebNode(authorDid) {
   );
 }
 
+export async function getContentMetadataFromWebNode({contentId, authorDid}) {
+  const records = await queryRecords({
+    from: authorDid,
+    schema: metadataSchema,
+    parentId: contentId,
+  });
+
+  const record = records?.at(0);
+  if (!record) {
+    console.log("No metadata record found for contentId: ", contentId);
+    return null;
+  }
+
+  const paywallRecord = await queryRecords({
+    schema: paywallSchema,
+    parentId: contentId,
+    from: authorDid,
+  });
+
+  return {
+    ...(await flattenRecord(record)),
+    paywall: await flattenRecord(paywallRecord?.at(0)),
+  };
+}
+
 export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
   // Read the content record
   if (!contentId) {
@@ -218,6 +243,9 @@ export async function registerSubscriptionInWebNode({
 
   return status;
 }
+
+
+
 
 export async function deleteContentFromWebNode(contentId) {
   if (!contentId) {
