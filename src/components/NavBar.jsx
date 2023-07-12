@@ -5,7 +5,7 @@ import person from "../assets/person.png";
 import { Link, useLocation } from "react-router-dom";
 import theme from "../theme";
 
-const NavBar = () => {
+const NavBar = (profile) => {
   const tabs = [
     {
       text: "View Posts",
@@ -34,7 +34,11 @@ const NavBar = () => {
       ))}
       <Spacer />
       <Box w={"5em"}></Box>
-      <Link to="/profile" > <Image mr="2em" src={person} w={12} _hover={{background:"transparent", filter:"brightness(250%)"}}/>  </Link>
+      <Link to="/profile" mr="2em" > {profile?.displayImage ? (
+                    <Image  mr="2em" src={URL.createObjectURL(profile?.displayImage)} w={12} />
+                ) : (
+                    <Image  mr="2em" src={person} w={12} />
+                )}  </Link>
     </Flex>
   );
 };

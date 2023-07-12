@@ -28,7 +28,7 @@ function App() {
 
   return (
     <Flex direction={"column"}>
-      <NavBar />
+      <NavBar profile={profile} />
       <Modal size="xl" isOpen={isOpen} onClose={onClose}>
         <ModalOverlay width="150em" />
         <ProfileEditModal profile={profile} setProfile={setProfile} onClose={onClose} />

@@ -61,9 +61,11 @@ const theme = extendTheme({
         size: "lg", // default is md
       },
     },
-    ModalContent:{
-      defaultProps:{
-        
+    Progress: {
+      baseStyle: {
+        filledTrack: {
+          bg: "#23E5F1"
+        }
       }
     }
   },
