@@ -6,12 +6,7 @@ import {
   protocolUri,
   subscriptionSchema,
 } from "../schemas/paywallProtocol.js";
-import {
-  web5,
-  userDid,
-  flattenRecord,
-  queryRecords,
-} from "./dwnService.js";
+import { web5, userDid, flattenRecord, queryRecords } from "./dwnService.js";
 import { getProfileFromWebNode } from "./profileService.js";
 
 export async function publishContentToWebNode({
@@ -23,6 +18,8 @@ export async function publishContentToWebNode({
 }) {
   if (!body && !audio) throw new Error("body or audio are required");
 
+  const timestamp = new Date.now();
+
   // create the content record
   const { record: contentRecord, status: contentStatus } =
     await web5.dwn.records.create({
@@ -30,6 +27,7 @@ export async function publishContentToWebNode({
         title,
         description,
         body,
+        timestamp
       },
       message: {
         published: false,
@@ -41,9 +39,9 @@ export async function publishContentToWebNode({
     });
 
   console.log("content record: ", contentRecord, contentStatus);
-  if (!contentStatus === "success") {
-    console.log("Error creating content record");
-    return;
+  if (contentStatus.code !== 202) {
+    console.log("Error creating content record, contentStatus: ", contentStatus.code);
+    return false;
   }
 
   // create the metadata record
@@ -52,7 +50,7 @@ export async function publishContentToWebNode({
       data: {
         title,
         description,
-        body,
+        timestamp
       },
       message: {
         published: true,
@@ -69,7 +67,7 @@ export async function publishContentToWebNode({
 
   const profile = await getProfileFromWebNode();
 
-  if (!paywall) return metadataStatus === "success";
+  if (!paywall) return metadataStatus?.code === 202;
 
   // create the paywall record
   const { record: paywallRecord, status: paywallStatus } =
@@ -91,7 +89,7 @@ export async function publishContentToWebNode({
 
   console.log("paywall record: ", paywallRecord, paywallStatus);
 
-  if (!audio) return paywallStatus === "success";
+  if (!audio) return paywallStatus?.code === 202;
 
   // create the audio record
   const { record: audioRecord, status: audioStatus } =
@@ -109,7 +107,7 @@ export async function publishContentToWebNode({
     });
 
   console.log("audio record: ", audioRecord, audioStatus);
-  return audioStatus === "success";
+  return audioStatus?.code === 202;
 }
 
 export async function getAllContentMetadataFromWebNode(authorDid) {
@@ -118,6 +116,8 @@ export async function getAllContentMetadataFromWebNode(authorDid) {
     from: authorDid,
   });
 
+  console.log(records);
+
   return await Promise.all(
     records.map(async (rec) => {
       const paywallRecord = await queryRecords({
@@ -125,11 +125,11 @@ export async function getAllContentMetadataFromWebNode(authorDid) {
         parentId: rec.parentId,
         from: authorDid,
       });
-
+      console.log("paywallRecord: ", paywallRecord);
       return {
         ...(await flattenRecord(rec)),
         paywall: await flattenRecord(paywallRecord?.at(0)),
-      }
+      };
     })
   );
 }
@@ -157,7 +157,11 @@ export async function getContentFromWebNodeIfPaid(contentId, authorDid) {
   };
 }
 
-export async function registerSubscriptionInWebNode({ contentId, authorDid, invoice }) {
+export async function registerSubscriptionInWebNode({
+  contentId,
+  authorDid,
+  invoice,
+}) {
   if (!invoice?.paymentRequest)
     throw new Error("Invoice paymentRequest is required");
   if (!invoice?.preimage) throw new Error("Invoice preimage is required");

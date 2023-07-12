@@ -20,7 +20,7 @@ const BlogPost = ({ content }) => {
         {content.title}
       </Heading>
       <Box h='1em' />
-      <Heading fontFamily={"IBM Plex Sans"} fontWeight={600}  size="sm">{content.subtitle}</Heading>
+      <Heading fontFamily={"IBM Plex Sans"} fontWeight={600}  size="sm">{content.description}</Heading>
       <Box h='3em' />
       <MultilineText 
         fontFamily={"IBM Plex Sans"}

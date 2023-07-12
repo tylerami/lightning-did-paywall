@@ -19,7 +19,6 @@ import {
   useClipboard,
   InputGroup,
   InputRightElement,
-  Text,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { CopyIcon } from "@chakra-ui/icons";
@@ -68,14 +67,14 @@ const CreatePostPage = () => {
     }
   }
 
-  function getPaywall() { 
-    if (!paywallActive ) return null;
+  function getPaywall() {
+    if (!paywallActive) return null;
     if (parseInt(satsAmount) <= 0) return null;
 
-    return  {
+    return {
       satsAmount: parseInt(satsAmount),
       lightningAddress,
-    }
+    };
   }
 
   async function handlePublish() {
@@ -93,7 +92,8 @@ const CreatePostPage = () => {
       setTitle("");
       setSubtitle("");
       setBody("");
-      selectedMediaFile(null);
+      togglePaywall();
+      setSelectedMediaFile(null);
     } else {
       setModalMessage("Error publishing content.");
       onOpen();
@@ -117,14 +117,19 @@ const CreatePostPage = () => {
         width="100%"
         direction={"column"}
       >
-        <Flex w="100%"> 
-        <Heading size="2xl">Content Creator</Heading>
-        <Flex alignSelf="flex-end" mr={0} alignItems={"center"} justifyContent={"center"}>
-          {" "}
-          <Heading size="md">Paywall</Heading>
-          <Box w={"1em"} />
-          <Switch colorScheme="twitter" size="md" />
-        </Flex>
+        <Flex w="100%">
+          <Heading size="2xl">Content Creator</Heading>
+          <Flex
+            alignSelf="flex-end"
+            mr={0}
+            alignItems={"center"}
+            justifyContent={"center"}
+          >
+            {" "}
+            <Heading size="md">Paywall</Heading>
+            <Box w={"1em"} />
+            <Switch colorScheme="twitter" size="md" />
+          </Flex>
         </Flex>
         <Box h="0.5em"></Box>
         <Flex alignItems={"center"}>
@@ -223,6 +228,7 @@ const CreatePostPage = () => {
           <Heading size="md">Paywall</Heading>
           <Box w={"1em"} />
           <Switch
+            value={paywallActive}
             onChange={() => togglePaywall()}
             colorScheme="twitter"
             size="md"
