@@ -19,6 +19,7 @@ export async function publishContentToWebNode({
   if (!body && !audio) throw new Error("body or audio are required");
 
   const timestamp =  Date.now();
+  const type = audio ? "audio" : "text";
 
   // create the content record
   const { record: contentRecord, status: contentStatus } =
@@ -28,6 +29,7 @@ export async function publishContentToWebNode({
         description,
         body,
         timestamp,
+        type
       },
       message: {
         published: false,
@@ -54,6 +56,7 @@ export async function publishContentToWebNode({
         title,
         description,
         timestamp,
+        type
       },
       message: {
         published: true,

@@ -126,10 +126,7 @@ const CreatePostPage = () => {
             alignItems={"center"}
             justifyContent={"center"}
           >
-            {" "}
-            <Heading size="md">Paywall</Heading>
-            <Box w={"1em"} />
-            <Switch colorScheme="twitter" size="md" />
+           
           </Flex>
         </Flex>
         <Box h="0.5em"></Box>

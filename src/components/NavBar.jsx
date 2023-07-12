@@ -5,7 +5,7 @@ import person from "../assets/person.png";
 import { Link, useLocation } from "react-router-dom";
 import theme from "../theme";
 
-const NavBar = (profile) => {
+const NavBar = ({profile}) => {
   const tabs = [
     {
       text: "View Posts",

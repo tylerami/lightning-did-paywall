@@ -22,7 +22,7 @@ const BlogPost = ({ metadata }) => {
       contentId: metadata.parentId,
       authorDid: metadata.authorDid,
     });
-    setContent(contentUpdate);
+    //setContent(contentUpdate);
   }, [metadata]);
 
   // Load content on mount if paid
