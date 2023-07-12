@@ -9,9 +9,9 @@ export const createInvoice = async ({ satsAmount, address }) => {
   }
 
   if (!address) throw new Error("Missing address in invoice creation");
-  if (!satsAmount) throw new Error("Missing satsAmount in invoice creation");
+if (!satsAmount) throw new Error("Missing satsAmount in invoice creation");
 
-  const ln = new LightningAddress(address);
+  const ln = new LightningAddress("lightningpaywall@getalby.com");
 
   await ln.fetch();
 

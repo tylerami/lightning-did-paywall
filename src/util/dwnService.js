@@ -1,5 +1,5 @@
 import { Web5 } from "@tbd54566975/web5";
-import { paywallProtocol, protocolUri } from "../schemas/paywallProtocol";
+import { paywallProtocol, protocolUri } from "../schemas/paywallProtocol.js";
 
 // Create a new instance of Web5
 export const { web5, did: userDid } = await Web5.connect();

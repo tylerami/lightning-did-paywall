@@ -40,12 +40,7 @@ const ContentPaywall = ({ priceInSats }) => {
   const styles = theme.styles.global;
 
   return (
-    <Flex
-      padding="2em"
-      borderRadius="0.2em"
-      width="100%"
-      direction={"column"}
-    >
+    <Flex padding="2em" borderRadius="0.2em" width="100%" direction={"column"}>
       <Heading size="lg" textDecoration={"underline"}>
         This is paid content
       </Heading>
@@ -63,8 +58,6 @@ const ContentPaywall = ({ priceInSats }) => {
           <ModalHeader>Lightning Invoice</ModalHeader>
           <ModalCloseButton />
           <ModalBody p="5em" display={"flex"} justifyContent={"center"}>
-            {invoice?.paymentRequest ? 
-           <QRCode size={"150"} value={invoice?.paymentRequest} /> : null}
             {invoice?.paymentRequest ? (
               <QRCode size={"150"} value={invoice?.paymentRequest} />
             ) : null}
