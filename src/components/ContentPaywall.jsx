@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Box,
   Button,
@@ -13,7 +14,7 @@ import {
   ModalOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import lightningLogo from "../assets/lightningLogo.png";
 import {
   createInvoice,
@@ -22,18 +23,49 @@ import {
 import QRCode from "qrcode.react";
 import theme from "../theme";
 
-const ContentPaywall = ({ priceInSats }) => {
-  if (!priceInSats) priceInSats = 500;
-
+const ContentPaywall = ({ metadata, refreshContent }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [invoice, setInvoice] = useState(null);
 
   const [paymentReceived, setpaymentReceived] = useState("");
 
+  // timer to poll if invoice is paid
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    async function pollInvoice() {
+      if (!invoice) return;
+      console.log("polling invoice: ", invoice);
+      const isPaid = await verifyInvoiceAndRegisterIfPaid({
+        invoice,
+        contentId: metadata.parentId,
+        authorDid: metadata.authorDid,
+      });
+      console.log("isPaid: ", isPaid);
+      if (isPaid) {
+        onClose();
+        setInvoice(null);
+        refreshContent();
+      }
+    }
+
+    const intervalId = setInterval(() => {
+      pollInvoice();
+      setTimer((timer) => timer + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [invoice]);
+
   async function handleCreateInvoice() {
-    const invoice = await createInvoice(priceInSats);
+    if (!metadata?.paywall) return;
+
+    const invoice = await createInvoice(metadata?.paywall);
     if (!invoice) return;
+
     setInvoice(invoice);
     onOpen();
   }
@@ -59,31 +91,9 @@ const ContentPaywall = ({ priceInSats }) => {
           <ModalCloseButton />
           <ModalBody p="5em" display={"flex"} justifyContent={"center"}>
             {invoice?.paymentRequest ? (
-              <QRCode size={"150"} value={invoice?.paymentRequest} />
+              <QRCode size={"300"} value={invoice?.paymentRequest} />
             ) : null}
           </ModalBody>
-          <ModalFooter
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-          >
-            <Button
-              variant="primary"
-              mb="2em"
-              size="lg"
-              mr={3}
-              onClick={async () => {
-                if (await verifyInvoiceAndRegisterIfPaid(invoice)) {
-                  setpaymentReceived("Payment Received");
-                } else {
-                  setpaymentReceived("Payment Failed");
-                }
-              }}
-            >
-              Verify
-            </Button>
-            <Heading>{paymentReceived}</Heading>
-          </ModalFooter>
         </ModalContent>
       </Modal>
 
@@ -95,7 +105,7 @@ const ContentPaywall = ({ priceInSats }) => {
           color={styles.brand.cyan}
           size="2xl"
         >
-          {`Price: ${priceInSats} sats`}
+          {`Price: ${metadata?.paywall?.satsAmount ?? "?"} sats`}
         </Heading>
         <Button
           variant="primary"

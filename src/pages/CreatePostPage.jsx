@@ -43,8 +43,8 @@ const CreatePostPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [paywallActive, setPaywallActive] = useState(false);
-  const [lightningAddress, setLightningAddress] = useState(null);
-  const [satsAmount, setSatsAmount] = useState(null);
+  const [lightningAddress, setLightningAddress] = useState("");
+  const [satsAmount, setSatsAmount] = useState("");
 
   const [selectedMediaFile, setSelectedMediaFile] = useState(null);
 
@@ -55,16 +55,17 @@ const CreatePostPage = () => {
   }
 
   async function togglePaywall() {
-    if (paywallActive) {
-      setPaywallActive(false);
-      setLightningAddress(null);
-      setSatsAmount(null);
+    const updatedPaywallActive = !paywallActive;
+    setPaywallActive(updatedPaywallActive);
+    if (!updatedPaywallActive) {
+      setLightningAddress("");
+      setSatsAmount("");
     } else {
       const profile = await getProfileFromWebNode();
       setLightningAddress(profile?.lightningAddress);
       setSatsAmount("");
-      setPaywallActive(true);
     }
+
   }
 
   function getPaywall() {
@@ -228,7 +229,7 @@ const CreatePostPage = () => {
           <Heading size="md">Paywall</Heading>
           <Box w={"1em"} />
           <Switch
-            value={paywallActive}
+            isChecked={paywallActive}
             onChange={() => togglePaywall()}
             colorScheme="twitter"
             size="md"

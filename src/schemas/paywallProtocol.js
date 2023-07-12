@@ -1,6 +1,6 @@
 const baseUri = "https://lightningPaywall.app";
 
-export const protocolUri = `${baseUri}/protocolTest40`;
+export const protocolUri = `${baseUri}/protocolTest42`;
 
 export const contentSchema = `${baseUri}/content`;
 export const metadataSchema = `${baseUri}/metadata`;
@@ -24,7 +24,7 @@ export const paywallProtocol = {
     audio: {
       dataFormats: ["audio/mp3"],
     },
-    subscriber: {
+    subscription: {
       schema: subscriptionSchema,
       dataFormats: ["application/json"],
     },

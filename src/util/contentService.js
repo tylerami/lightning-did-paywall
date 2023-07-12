@@ -18,7 +18,7 @@ export async function publishContentToWebNode({
 }) {
   if (!body && !audio) throw new Error("body or audio are required");
 
-  const timestamp = new Date.now();
+  const timestamp =  Date.now();
 
   // create the content record
   const { record: contentRecord, status: contentStatus } =
@@ -27,7 +27,7 @@ export async function publishContentToWebNode({
         title,
         description,
         body,
-        timestamp
+        timestamp,
       },
       message: {
         published: false,
@@ -40,7 +40,10 @@ export async function publishContentToWebNode({
 
   console.log("content record: ", contentRecord, contentStatus);
   if (contentStatus.code !== 202) {
-    console.log("Error creating content record, contentStatus: ", contentStatus.code);
+    console.log(
+      "Error creating content record, contentStatus: ",
+      contentStatus.code
+    );
     return false;
   }
 
@@ -50,7 +53,7 @@ export async function publishContentToWebNode({
       data: {
         title,
         description,
-        timestamp
+        timestamp,
       },
       message: {
         published: true,
@@ -134,14 +137,34 @@ export async function getAllContentMetadataFromWebNode(authorDid) {
   );
 }
 
-export async function getContentFromWebNodeIfPaid(contentId, authorDid) {
+export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
   // Read the content record
-  const contentRecord = await web5.dwn.records.read({
-    from: authorDid,
+  if (!contentId) {
+    console.log("contentId is required");
+    return null;
+  }
+  if (!authorDid) {
+    console.log("authorDid is required");
+    return null;
+  }
+
+  const request = {
     message: {
       recordId: contentId,
     },
-  });
+  };
+
+  if (authorDid && authorDid !== userDid) {
+    request.from = authorDid;
+  }
+
+  const { record: contentRecord, status: contentStatus } =
+    await web5.dwn.records.read(request);
+
+  if (contentStatus.code !== 200) {
+    console.log("Error reading content record, contentStatus: ", contentRecord,  contentStatus);
+    return null;
+  }
 
   // get the audio record
   const audioRecords = await queryRecords({
@@ -153,7 +176,7 @@ export async function getContentFromWebNodeIfPaid(contentId, authorDid) {
   const audioBinary = await flattenRecord(audioRecords?.at(0));
   return {
     ...(await flattenRecord(contentRecord)),
-    audioBinary,
+    audio: audioBinary,
   };
 }
 
@@ -164,21 +187,25 @@ export async function registerSubscriptionInWebNode({
 }) {
   if (!invoice?.paymentRequest)
     throw new Error("Invoice paymentRequest is required");
-  if (!invoice?.preimage) throw new Error("Invoice preimage is required");
+  if (!invoice?.paymentHash) throw new Error("Invoice paymentHash is required");
 
   var { record, status } = await web5.dwn.records.create({
     data: {
       paymentRequest: invoice.paymentRequest,
-      invoicePreimage: invoice.preimage,
+      preimage: invoice.preimage,
+      paymentHash: invoice.paymentHash,
     },
     author: authorDid,
     message: {
+      protocol: protocolUri,
+      protocolPath: "content/subscription",
+      contextId: contentId,
       parentId: contentId,
       recipient: userDid,
       schema: subscriptionSchema,
     },
   });
-
+  console.log("register subscription status: ",record,  status);
   const { status: receiptStatus } = await record.send(userDid);
   console.log("register subscription status: ", status, receiptStatus);
 

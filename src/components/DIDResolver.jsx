@@ -15,7 +15,7 @@ import React, { useState } from "react";
 import theme from "../theme";
 import { getAllContentMetadataFromWebNode } from "../util/contentService";
 
-const DIDResolver = ({ setContentList }) => {
+const DIDResolver = ({ setMetadataList }) => {
   const [did, setDid] = useState("");
 
   async function handleCopy() {
@@ -26,10 +26,10 @@ const DIDResolver = ({ setContentList }) => {
   const styles = theme.styles.global;
 
   async function handleResolve(did) {
-    const contentList = await getAllContentMetadataFromWebNode(did);
-    if (!contentList) return; 
+    const metadataList = await getAllContentMetadataFromWebNode(did);
+    if (!metadataList) return;
 
-    setContentList(contentList);
+    setMetadataList(metadataList);
   }
 
   return (

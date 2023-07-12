@@ -5,7 +5,7 @@ import BlogPost from "../components/BlogPost";
 import ContentPaywall from "../components/ContentPaywall";
 
 const ViewPostsPage = () => {
-  const [contentList, setContentList] = useState([]);
+  const [metadataList, setMetadataList] = useState([]);
 
   return (
     <Flex
@@ -16,11 +16,11 @@ const ViewPostsPage = () => {
       direction="column"
       padding={"2em"}
     >
-      <DIDResolver setContentList={setContentList} />
+      <DIDResolver setMetadataList={setMetadataList} />
       <Box h="3em" borderBottom="solid 1px #444"></Box>
 
-      {contentList.map((content, index) => (
-        <BlogPost key={index} content={content} />
+      {metadataList.map((content, index) => (
+        <BlogPost key={index} metadata={content} />
       ))}
     </Flex>
   );
