@@ -41,7 +41,7 @@ export async function publishContentToWebNode({
     });
 
   console.log("content record: ", contentRecord, contentStatus);
-  if (!contentRecord) {
+  if (!contentStatus === "success") {
     console.log("Error creating content record");
     return;
   }
@@ -69,6 +69,8 @@ export async function publishContentToWebNode({
 
   const profile = await getProfileFromWebNode();
 
+  if (!paywall) return metadataStatus === "success";
+
   // create the paywall record
   const { record: paywallRecord, status: paywallStatus } =
     await web5.dwn.records.create({
@@ -78,6 +80,7 @@ export async function publishContentToWebNode({
       },
       message: {
         published: true,
+        contextId: contentRecord.id,
         parentId: contentRecord.id,
         schema: paywallSchema,
         protocol: protocolUri,
@@ -88,7 +91,7 @@ export async function publishContentToWebNode({
 
   console.log("paywall record: ", paywallRecord, paywallStatus);
 
-  if (!audio) return;
+  if (!audio) return paywallStatus === "success";
 
   // create the audio record
   const { record: audioRecord, status: audioStatus } =
@@ -96,6 +99,7 @@ export async function publishContentToWebNode({
       data: audio,
       message: {
         published: false,
+        contextId: contentRecord.id,
         parentId: contentRecord.id,
         schema: audioSchema,
         protocol: protocolUri,
@@ -105,6 +109,7 @@ export async function publishContentToWebNode({
     });
 
   console.log("audio record: ", audioRecord, audioStatus);
+  return audioStatus === "success";
 }
 
 export async function getAllContentMetadataFromWebNode(authorDid) {
