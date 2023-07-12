@@ -5,34 +5,39 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import CreatePostPage from "./pages/CreatePostPage";
 import ViewPostsPage from "./pages/ViewPostsPage";
 import Profile from "./pages/Profile";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ProfileEditModal from "./components/ProfileEditModal";
+import { getProfileFromWebNode } from "./util/profileService";
 
 function App() {
-
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  //TODO(ailany): change to getProfile(did);
-  const profile = null; 
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    if(!profile){
-      onOpen();
+    async function checkProfile() {
+      const existingProfile = await getProfileFromWebNode();
+      setProfile(existingProfile);
+      console.log(existingProfile);
+      if (!existingProfile) {
+        onOpen();
+      }
     }
-  },[profile]);
-  
+    checkProfile();
+  }, [onOpen]);
+
   return (
     <Flex direction={"column"}>
       <NavBar />
-      <Modal size="xl"  isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay  width="150em"/>
-        <ProfileEditModal onClose={onClose} />
-        </Modal>
+      <Modal size="xl" isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay width="150em" />
+        <ProfileEditModal profile={profile} setProfile={setProfile} onClose={onClose} />
+      </Modal>
       <Routes>
         <Route path="/" element={<Navigate to="/createPost" />} />
-        <Route path="/createPost"  element={<CreatePostPage/>}/>
-        <Route path="/viewPosts" element={<ViewPostsPage/>}/>
-        <Route path="/profile" element={<Profile/>}/>
+        <Route path="/createPost" element={<CreatePostPage />} />
+        <Route path="/viewPosts" element={<ViewPostsPage />} />
+        <Route path="/profile" element={<Profile openEditProfileModal={onOpen} profile={profile} />} />
       </Routes>
     </Flex>
   );

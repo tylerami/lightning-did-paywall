@@ -7,26 +7,14 @@ import {
   subscriptionSchema,
 } from "../schemas/paywallProtocol.js";
 import {
-  baseUrl,
   web5,
   userDid,
   flattenRecord,
   queryRecords,
 } from "./dwnService.js";
-import { getProfile } from "./profileService.js";
+import { getProfileFromWebNode } from "./profileService.js";
 
-// publishContent({
-//   title: "My first content",
-//   description: "This is my first content",
-//   body: "This is the body of my first content",
-//   paywall: {
-//     satsAmount: 100,
-//     lightningAddress: null
-//   }
-
-// });
-
-export async function publishContent({
+export async function publishContentToWebNode({
   title,
   description,
   body,
@@ -79,7 +67,7 @@ export async function publishContent({
 
   console.log("metadata record: ", metadataRecord, metadataStatus);
 
-  const profile = await getProfile();
+  const profile = await getProfileFromWebNode();
 
   // create the paywall record
   const { record: paywallRecord, status: paywallStatus } =
@@ -119,7 +107,7 @@ export async function publishContent({
   console.log("audio record: ", audioRecord, audioStatus);
 }
 
-export async function getAllContentMetadata(authorDid) {
+export async function getAllContentMetadataFromWebNode(authorDid) {
   const records = await queryRecords({
     schema: metadataSchema,
     from: authorDid,
@@ -141,7 +129,7 @@ export async function getAllContentMetadata(authorDid) {
   );
 }
 
-export async function getContentIfPaid(contentId, authorDid) {
+export async function getContentFromWebNodeIfPaid(contentId, authorDid) {
   // Read the content record
   const contentRecord = await web5.dwn.records.read({
     from: authorDid,
@@ -164,7 +152,7 @@ export async function getContentIfPaid(contentId, authorDid) {
   };
 }
 
-export async function registerSubscription({ contentId, authorDid, invoice }) {
+export async function registerSubscriptionInWebNode({ contentId, authorDid, invoice }) {
   if (!invoice?.paymentRequest)
     throw new Error("Invoice paymentRequest is required");
   if (!invoice?.preimage) throw new Error("Invoice preimage is required");

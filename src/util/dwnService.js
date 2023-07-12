@@ -16,7 +16,7 @@ async function configureProtocol() {
   const { protocols, status } = await web5.dwn.protocols.query({
     message: {
       filter: {
-        protocol:  protocolUri,
+        protocol: protocolUri,
       },
     },
   });
@@ -92,47 +92,54 @@ export async function upsertRecord({
   getExistingRecord,
   data,
   schema,
-  protocol,
   protocolPath,
+  parentId,
   published = false,
-  format = "application/json",
+  dataFormat = "application/json",
   recordNullValues = false,
 }) {
-  const record = await getExistingRecord();
-
-  var response;
+  var record = await getExistingRecord();
+  console.log("existing record: ", record);
   if (record) {
-    if (format === "application/json") {
+    if (dataFormat === "application/json") {
       const existingData = await record?.data?.json();
       if (!recordNullValues) {
         data = removeNullProperties(data);
       }
-      response = await record.update({
+      const { record: updatedRecord, status } = await record.update({
         data: {
           ...existingData,
           ...data,
         },
       });
+      return { record: updatedRecord, status };
     } else {
-      response = await record.update({
+      const { record: updatedRecord, status } = await record.update({
         data: data,
       });
+      return { record: updatedRecord, status };
     }
-    console.log("updating record with type: ", response, schema);
   } else {
-    response = await web5.dwn.records.create({
+    console.log("creating record with type: ", schema);
+    console.log("data is: ", data);
+
+    var message = {
+      published,
+      schema,
+      parentId,
+      contextId: parentId,
+      protocol: protocolUri,
+      protocolPath,
+      dataFormat,
+    };
+    message = removeNullProperties(message);
+    console.log(message);
+    const { record: updatedRecord, status } = await web5.dwn.records.create({
       data: data,
-      message: {
-        published: false,
-        schema,
-        protocol: protocol ?? protocolUri,
-        protocolPath,
-        format,
-      },
+      message: message,
     });
-    console.log("creating record with type: ", response, schema);
+    return { record: updatedRecord, status };
   }
-  return response;
 }
 
 function removeNullProperties(obj) {

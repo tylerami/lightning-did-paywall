@@ -24,7 +24,7 @@ import React, { useState } from "react";
 import { CopyIcon } from "@chakra-ui/icons";
 import theme from "../theme.jsx";
 import { getDid } from "../util/dwnService.js";
-import { publishContent } from "../util/contentService.js";
+import { publishContentToWebNode } from "../util/contentService.js";
 
 const CreatePostPage = () => {
   const [title, setTitle] = useState("");
@@ -38,7 +38,7 @@ const CreatePostPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   async function handlePublish() {
-    if (await publishContent(title, subtitle, body)) {
+    if (await publishContentToWebNode(title, subtitle, body)) {
       setModalMessage("Content published!");
       onOpen();
       setTitle("");

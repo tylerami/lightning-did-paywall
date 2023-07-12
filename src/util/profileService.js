@@ -1,15 +1,15 @@
 import {
-  profilePictureSchema,
+  displayImageSchema,
   profileSchema,
 } from "../schemas/paywallProtocol.js";
-import {
-  baseUrl,
-  flattenRecord,
-  queryRecords,
-  upsertRecord,
-} from "./dwnService.js";
+import { flattenRecord, queryRecords, upsertRecord } from "./dwnService.js";
 
-export async function setProfile({ username, bio, lightningAddress }) {
+export async function setProfileInWebNode({
+  username,
+  bio,
+  lightningAddress,
+  displayImage,
+}) {
   const response = await upsertRecord({
     getExistingRecord: getProfileRecord,
     data: {
@@ -21,36 +21,39 @@ export async function setProfile({ username, bio, lightningAddress }) {
     protocolPath: "profile",
     published: true,
   });
-  return response;
-}
+  console.log("profile response", response);
+  if (!response || !displayImage) return response;
+  const profileRecord = response.record;
 
-export async function setProfilePicture({ binaryImage }) {
-  const response = await upsertRecord({
-    getExistingRecord: getProfilePictureRecord,
-    data: binaryImage,
-    schema: profilePictureSchema,
-    protocolPath: "profile/profilePicture",
+  console.log(profileRecord);
+  const displayImageResponse = await upsertRecord({
+    getExistingRecord: getDisplayImageRecord,
+    data: displayImage,
+    parentId: profileRecord?.id,
+    schema: displayImageSchema,
+    protocolPath: "profile/displayImage",
     dataFormat: "image/png",
     published: true,
   });
-  return response;
+  console.log("image response", displayImageResponse);
+  return displayImageResponse;
 }
 
-export async function getProfile(did) {
+
+export async function getProfileFromWebNode(did) {
   const profileRecord = await getProfileRecord(did);
-  return await flattenRecord(profileRecord);
+  if (!profileRecord) return null;
+
+  const displayImageRecord = await getDisplayImageRecord(did);
+  const displayImage = await displayImageRecord?.data?.blob();
+  console.log("display image", displayImage);
+
+  return { ...(await flattenRecord(profileRecord)), displayImage };
 }
 
-export async function getProfilePicture(did) {
-  const profilePictureRecord = await getProfilePictureRecord(did);
-  const profilePicture = await profilePictureRecord?.data?.blob();
-
-  return profilePicture;
-}
-
-async function getProfilePictureRecord(did) {
-  const records = queryRecords({
-    schema: profilePictureSchema,
+async function getDisplayImageRecord(did) {
+  const records = await queryRecords({
+    schema: displayImageSchema,
     dataFormat: "image/png",
     from: did,
   });

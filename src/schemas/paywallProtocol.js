@@ -1,14 +1,14 @@
 const baseUri = "https://lightningPaywall.app";
 
-export const protocolUri = `${baseUri}/protocol`;
+export const protocolUri = `${baseUri}/protocolTest40`;
 
-export const contentSchema = `${protocolUri}/content`;
-export const metadataSchema = `${protocolUri}/metadata`;
-export const audioSchema = `${protocolUri}/audio`;
-export const subscriptionSchema = `${protocolUri}/subscription`;
-export const paywallSchema = `${protocolUri}/paywall`;
-export const profileSchema = `${protocolUri}/profile`;
-export const profilePictureSchema = `${protocolUri}/profilePicture`;
+export const contentSchema = `${baseUri}/content`;
+export const metadataSchema = `${baseUri}/metadata`;
+export const audioSchema = `${baseUri}/audio`;
+export const subscriptionSchema = `${baseUri}/subscription`;
+export const paywallSchema = `${baseUri}/paywall`;
+export const profileSchema = `${baseUri}/profile`;
+export const displayImageSchema = `${baseUri}/displayImage`;
 
 export const paywallProtocol = {
   protocol: protocolUri,
@@ -22,7 +22,6 @@ export const paywallProtocol = {
       dataFormats: ["application/json"],
     },
     audio: {
-      schema: audioSchema,
       dataFormats: ["audio/mp3"],
     },
     subscriber: {
@@ -37,6 +36,10 @@ export const paywallProtocol = {
       schema: profileSchema,
       dataFormats: ["application/json"],
     },
+    displayImage: {
+      schema: displayImageSchema,
+      dataFormats: ["image/png", "image/jpeg"],
+    },
   },
   structure: {
     profile: {
@@ -44,7 +47,7 @@ export const paywallProtocol = {
         { who: "anyone", can: "read" },
         { who: "anyone", can: "write" },
       ],
-      profilePicture: {
+      displayImage: {
         $actions: [
           { who: "anyone", can: "read" },
           { who: "author", of: "profile", can: "write" },

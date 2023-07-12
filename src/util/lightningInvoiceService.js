@@ -1,15 +1,15 @@
 import { LightningAddress } from "alby-tools";
-import { getProfile } from "./profileService.js";
-import { registerSubscription } from "./contentService.js";
+import { getProfileFromWebNode } from "./profileService.js";
+import { registerSubscriptionInWebNode } from "./contentService.js";
 
 export const createInvoice = async ({ satsAmount, address }) => {
   if (!address) {
-    const profile = await getProfile();
+    const profile = await getProfileFromWebNode();
     address = profile.lightningAddress;
   }
 
   if (!address) throw new Error("Missing address in invoice creation");
-if (!satsAmount) throw new Error("Missing satsAmount in invoice creation");
+  if (!satsAmount) throw new Error("Missing satsAmount in invoice creation");
 
   const ln = new LightningAddress("lightningpaywall@getalby.com");
 
@@ -22,7 +22,7 @@ if (!satsAmount) throw new Error("Missing satsAmount in invoice creation");
 export const verifyInvoiceAndRegisterIfPaid = async ({
   contentId,
   authorDid,
-  invoice
+  invoice,
 }) => {
   if (!invoice) throw new Error("Missing invoice in invoice verification");
   if (!authorDid) throw new Error("Missing authorDid in invoice verification");
@@ -31,7 +31,7 @@ export const verifyInvoiceAndRegisterIfPaid = async ({
   const isPaid = await invoice.isPaid();
   if (isPaid) {
     console.log("Invoice is paid");
-    const registerStatus = await registerSubscription({
+    const registerStatus = await registerSubscriptionInWebNode({
       authorDid,
       contentId,
       invoice,
