@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -20,6 +20,7 @@ import { getDid } from "../util/dwnService";
 import { CopyIcon, EditIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import PostTile from "../components/PostTile";
+import { getAllContentMetadataFromWebNode } from "../util/contentService";
 
 const Profile = ({ profile, openEditProfileModal }) => {
     const styles = theme.styles.global;
@@ -30,7 +31,17 @@ const Profile = ({ profile, openEditProfileModal }) => {
     const userDisplayName = displayName || userDid.substring(0, 20) + "...";
 
     const { hasCopied, onCopy } = useClipboard(getDid());
-
+    const tryLoadContent = useCallback(async () => {
+        const contentUpdate = await getAllContentMetadataFromWebNode(userDid);
+        setContentList(contentUpdate);
+        console.log(contentUpdate);
+        console.log(contentUpdate[0]);
+      }, []);
+    
+    // Load content on mount
+    useEffect(() => {
+        tryLoadContent();
+    }, []);
     return (
         <Flex
             alignSelf={"center"}
@@ -103,20 +114,7 @@ const Profile = ({ profile, openEditProfileModal }) => {
                 <Box h="2em" />
 
 
-                <PostTile type="text" content={{ title: "Title", price: "500 sats", subtitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis" }} />
-                <PostTile type="text" content={{ title: "Title", price: "500 sats", subtitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis" }} />
-
-                <Button variant="primary" maxW="max-content">View more</Button>
-                <Box h="4em" />
-                
-                <Heading w="50%" pb="1em" borderBottom="solid 1px" borderColor={styles.brand.yellow}>Podcasts</Heading>
-                <Box h="2em" />
-                <PostTile type="audio" content={{ title: "Title", price: "500 sats"}} />
-
-
-                
-
-                {contentList.length === 0 ?
+                { contentList.length === 0 ?
                     <Flex mt="4em" alignItems="center" textAlign="center" direction="column">
                         <Heading size="xl" >{"No content to show."}</Heading>
                         <Box h="2em" />
@@ -125,9 +123,18 @@ const Profile = ({ profile, openEditProfileModal }) => {
                         </Link>
                     </Flex>
                     :
-                    contentList.map(post =>
-                        <></>)
+                    contentList.filter((post, i) => i < 3).map((post,i) => {
+                       return  <PostTile key={i} type="text" content={{title:post.title, subtitle:post.description, price:post.paywall?post.paywall.satsAmount+" sats": null}} />
+                    })
                 }
+
+               
+                <Button variant="primary" maxW="max-content">View more</Button>
+                <Box h="4em" />
+                
+                <Heading w="50%" pb="1em" borderBottom="solid 1px" borderColor={styles.brand.yellow}>Podcasts</Heading>
+                <Box h="2em" />
+                <PostTile type="audio" content={{ title: "Title", price: "500 sats"}} />
 
 
             </Flex>
