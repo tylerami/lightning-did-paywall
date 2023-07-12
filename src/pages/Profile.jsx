@@ -20,6 +20,7 @@ import { getDid } from "../util/dwnService";
 import { ArrowRightIcon, CopyIcon, EditIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import { getProfile } from "../util/profileService";
+import BlogPost from "../components/BlogPost";
 
 const Profile = ({ profile, openEditProfileModal }) => {
     const styles = theme.styles.global;
@@ -142,6 +143,8 @@ const Profile = ({ profile, openEditProfileModal }) => {
                     contentList.map(post=>
                         <></> )
                 }
+
+                <BlogPost content={{body:"hi",title:"hi",subtitle:"hi"}}/>
             </Flex>
         </Flex>
         
