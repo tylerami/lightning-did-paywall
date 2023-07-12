@@ -65,7 +65,6 @@ const CreatePostPage = () => {
       setLightningAddress(profile?.lightningAddress);
       setSatsAmount("");
     }
-
   }
 
   function getPaywall() {
@@ -93,8 +92,11 @@ const CreatePostPage = () => {
       setTitle("");
       setSubtitle("");
       setBody("");
-      togglePaywall();
       setSelectedMediaFile(null);
+
+      if (paywallActive) {
+        togglePaywall();
+      }
     } else {
       setModalMessage("Error publishing content.");
       onOpen();
@@ -125,9 +127,7 @@ const CreatePostPage = () => {
             mr={0}
             alignItems={"center"}
             justifyContent={"center"}
-          >
-           
-          </Flex>
+          ></Flex>
         </Flex>
         <Box h="0.5em"></Box>
         <Flex alignItems={"center"}>

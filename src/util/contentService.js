@@ -18,7 +18,7 @@ export async function publishContentToWebNode({
 }) {
   if (!body && !audio) throw new Error("body or audio are required");
 
-  const timestamp =  Date.now();
+  const timestamp = Date.now();
   const type = audio ? "audio" : "text";
 
   // create the content record
@@ -29,7 +29,7 @@ export async function publishContentToWebNode({
         description,
         body,
         timestamp,
-        type
+        type,
       },
       message: {
         published: false,
@@ -56,7 +56,7 @@ export async function publishContentToWebNode({
         title,
         description,
         timestamp,
-        type
+        type,
       },
       message: {
         published: true,
@@ -165,7 +165,11 @@ export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
     await web5.dwn.records.read(request);
 
   if (contentStatus.code !== 200) {
-    console.log("Error reading content record, contentStatus: ", contentRecord,  contentStatus);
+    console.log(
+      "Error reading content record, contentStatus: ",
+      contentRecord,
+      contentStatus
+    );
     return null;
   }
 
@@ -208,9 +212,30 @@ export async function registerSubscriptionInWebNode({
       schema: subscriptionSchema,
     },
   });
-  console.log("register subscription status: ",record,  status);
+  console.log("register subscription status: ", record, status);
   const { status: receiptStatus } = await record.send(userDid);
   console.log("register subscription status: ", status, receiptStatus);
 
   return status;
+}
+
+export async function deleteContentFromWebNode(contentId) {
+  if (!contentId) {
+    console.log("contentId is required");
+    return;
+  }
+
+  const { record, status } = await web5.dwn.records.read({
+    message: {
+      recordId: contentId,
+    },
+  });
+
+  if (status.code !== 200) {
+    console.log("Error reading content record, status: ", record, status);
+    return;
+  }
+
+  const { status: deleteStatus } = await record.delete();
+  console.log("delete content status: ", deleteStatus);
 }

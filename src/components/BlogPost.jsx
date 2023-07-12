@@ -32,6 +32,7 @@ const BlogPost = ({ metadata }) => {
 
 
   if (!metadata) return null;
+  console.log(metadata);
 
   return (
     <Flex
