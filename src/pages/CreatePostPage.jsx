@@ -67,9 +67,16 @@ const CreatePostPage = () => {
         width="100%"
         direction={"column"}
       >
+        <Flex w="100%"> 
         <Heading size="2xl">Content Creator</Heading>
+        <Flex alignSelf="flex-end" mr={0} alignItems={"center"} justifyContent={"center"}>
+          {" "}
+          <Heading size="md">Paywall</Heading>
+          <Box w={"1em"} />
+          <Switch colorScheme="twitter" size="md" />
+        </Flex>
+        </Flex>
         <Box h="0.5em"></Box>
-      
         <Flex alignItems={"center"}>
         <InputGroup size="md">
           <Input
@@ -137,13 +144,7 @@ const CreatePostPage = () => {
           border="1px solid lightgray"
         />
         <Box h={"1em"} />
-        <Flex alignItems={"center"} justifyContent={"center"}>
-          {" "}
-          <Heading size="md">Paywall</Heading>
-          <Box w={"1em"} />
-          <Switch colorScheme="twitter" size="md" />
-        </Flex>
-        <Box h={"1em"} />
+      
 
         <Modal size="xl" isOpen={isOpen} onClose={onClose}>
           <ModalOverlay width="200em" />
