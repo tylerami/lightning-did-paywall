@@ -67,6 +67,13 @@ const theme = extendTheme({
           bg: "#23E5F1"
         }
       }
+    },
+    IconButton:{
+      variants:{
+        "no-bg": {
+          bg:"transparent"
+        }
+      }
     }
   },
 });
