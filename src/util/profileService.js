@@ -21,6 +21,7 @@ export async function setProfileInWebNode({
     protocolPath: "profile",
     published: true,
   });
+  console.log("profile response: ", response);
   if (!response || !displayImage) return response;
   const profileRecord = response.record;
 
@@ -42,7 +43,11 @@ export async function getProfileFromWebNode(did) {
   if (!profileRecord) return null;
 
   const displayImageRecord = await getDisplayImageRecord(did);
-  const displayImage = await displayImageRecord?.data?.blob();
+
+  var  displayImage;
+  if (displayImageRecord) {
+    displayImage =  await displayImageRecord?.data?.blob();
+  }
 
   return { ...(await flattenRecord(profileRecord)), displayImage };
 }

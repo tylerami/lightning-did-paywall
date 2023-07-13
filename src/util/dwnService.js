@@ -28,27 +28,34 @@ async function configureProtocol() {
     return;
   }
 
+  console.log(  "protocols: ",  protocols);
   // protocol already exists
   if (protocols.length > 0) {
     console.log("protocol already exists");
     return;
   }
   try {
-    const { status: configureStatus } = await web5.dwn.protocols.configure({
+    const { protocol,  status: configureStatus } = await web5.dwn.protocols.configure({
       message: {
         definition: paywallProtocol,
       },
     });
     console.log("configure protocol status", configureStatus);
+
+    const {status: sendProtocolStatus} = await protocol.send(userDid);
+    console.log("send protocol status: ", sendProtocolStatus);
   } catch (e) {
     console.log("error configuring protocol: ", e);
   }
+
+
 }
 
 configureProtocol();
 
 export async function flattenRecord(record) {
   if (!record) return null;
+  if (!record.data) return null;
 
   const data = await record?.data?.json();
   return {
