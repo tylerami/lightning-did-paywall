@@ -28,8 +28,6 @@ const ContentPaywall = ({ metadata, refreshContent }) => {
 
   const [invoice, setInvoice] = useState(null);
 
-  const [paymentReceived, setpaymentReceived] = useState("");
-
   // timer to poll if invoice is paid
   const [timer, setTimer] = useState(0);
 
@@ -39,7 +37,7 @@ const ContentPaywall = ({ metadata, refreshContent }) => {
       console.log("polling invoice: ", invoice);
       const isPaid = await verifyInvoiceAndRegisterIfPaid({
         invoice,
-        contentId: metadata.parentId,
+        contentId: metadata.id,
         authorDid: metadata.authorDid,
       });
       console.log("isPaid: ", isPaid);

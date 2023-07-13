@@ -1,6 +1,6 @@
 const baseUri = "https://lightningPaywall.app";
 
-export const protocolUri = `${baseUri}/protocolTest42`;
+export const protocolUri = `${baseUri}/protocolTest43`;  //42
 
 export const contentSchema = `${baseUri}/content`;
 export const metadataSchema = `${baseUri}/metadata`;
@@ -58,7 +58,7 @@ export const paywallProtocol = {
       $actions: [
         {
           who: "recipient",
-          of: "content/subscriber",
+          of: "content/metadata/subscriber",
           can: "read",
         },
         { who: "author", of: "content", can: "read" },
@@ -72,6 +72,19 @@ export const paywallProtocol = {
           { who: "anyone", can: "read" },
           { who: "author", of: "content", can: "write" },
         ],
+        subscription: {
+          $actions: [
+            {
+              who: "author",
+              of: "content",
+              can: "write",
+            },
+            {
+              who: "anyone",
+              can: "read",
+            },
+          ],
+        },
       },
       paywall: {
         $actions: [
@@ -83,7 +96,7 @@ export const paywallProtocol = {
         $actions: [
           {
             who: "recipient",
-            of: "content/subscriber",
+            of: "content/metadata/subscriber",
             can: "read",
           },
           {
@@ -93,19 +106,7 @@ export const paywallProtocol = {
           },
         ],
       },
-      subscription: {
-        $actions: [
-          {
-            who: "author",
-            of: "content",
-            can: "write",
-          },
-          {
-            who: "anyone",
-            can: "read",
-          },
-        ],
-      },
+
     },
   },
 };

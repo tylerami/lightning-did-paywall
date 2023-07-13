@@ -20,20 +20,20 @@ export const createInvoice = async ({ satsAmount, lightningAddress }) => {
 };
 
 export const verifyInvoiceAndRegisterIfPaid = async ({
-  contentId,
+  metadataId,
   authorDid,
   invoice,
 }) => {
   if (!invoice) throw new Error("Missing invoice in invoice verification");
   if (!authorDid) throw new Error("Missing authorDid in invoice verification");
-  if (!contentId) throw new Error("Missing contentId in invoice verification");
+  if (!metadataId) throw new Error("Missing metadataId in invoice verification");
 
   const isPaid = await invoice.isPaid();
   if (isPaid) {
     console.log("Invoice is paid");
     const registerStatus = await registerSubscriptionInWebNode({
       authorDid,
-      contentId,
+      metadataId,
       invoice,
     });
     console.log("Register status: ", registerStatus);

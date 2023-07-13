@@ -47,9 +47,6 @@ export async function publishContentToWebNode({
       contentStatus.code
     );
     return false;
-  } else {
-    const { status: sendStatus } = await contentRecord.send(userDid);
-    console.log("content record send status: ", sendStatus);
   }
 
   // create the metadata record
@@ -80,9 +77,6 @@ export async function publishContentToWebNode({
       metadataStatus.code
     );
     return false;
-  } else {
-    const { status: sendStatus } = await metadataRecord.send(userDid);
-    console.log("metadata record send status: ", sendStatus);
   }
 
   const profile = await getProfileFromWebNode();
@@ -115,9 +109,6 @@ export async function publishContentToWebNode({
         paywallStatus
       );
       return false;
-    } else {
-      const { status: sendStatus } = await paywallRecord.send(userDid);
-      console.log("paywall record send status: ", sendStatus);
     }
   }
 
@@ -142,9 +133,6 @@ export async function publishContentToWebNode({
     if (audioStatus.code !== 202) {
       console.log("Error creating audio record, audioStatus: ", audioStatus);
       return false;
-    } else {
-      const { status: sendStatus } = await audioRecord.send(userDid);
-      console.log("audio record send status: ", sendStatus);
     }
   }
 
@@ -248,7 +236,7 @@ export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
 }
 
 export async function registerSubscriptionInWebNode({
-  contentId,
+  metadataId,
   authorDid,
   invoice,
 }) {
@@ -265,9 +253,9 @@ export async function registerSubscriptionInWebNode({
     author: authorDid,
     message: {
       protocol: protocolUri,
-      protocolPath: "content/subscription",
-      contextId: contentId,
-      parentId: contentId,
+      protocolPath: "content/metadata/subscription",
+      contextId: metadataId,
+      parentId: metadataId,
       recipient: userDid,
       schema: subscriptionSchema,
     },
@@ -278,9 +266,6 @@ export async function registerSubscriptionInWebNode({
     console.log("Error creating subscription record, status: ", status);
     return;
   }
-
-  const { status: receiptStatus } = await record.send(userDid);
-  console.log("register subscription status: ", status, receiptStatus);
 
   return status;
 }

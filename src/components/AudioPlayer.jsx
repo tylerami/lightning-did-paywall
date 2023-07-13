@@ -53,7 +53,7 @@ const AudioPlayer = () => {
     );
 }
 
-const PlayIcon = (size) => {
+const PlayIcon = ({size}) => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="currentColor" className="bi bi-play-fill" viewBox="0 0 16 16">
             <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
@@ -61,7 +61,7 @@ const PlayIcon = (size) => {
     );
 }
 
-const PauseIcon = (size) => {
+const PauseIcon = ({size}) => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="currentColor" className="bi bi-pause" viewBox="0 0 16 16">
             <path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z" />
@@ -69,7 +69,7 @@ const PauseIcon = (size) => {
     );
 }
 
-const AudioIcon = (size) => {
+const AudioIcon = ({size}) => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="currentColor" className="bi bi-volume-up-fill" viewBox="0 0 16 16">
             <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z" />
@@ -79,7 +79,7 @@ const AudioIcon = (size) => {
     );
 }
 
-const AudioMuteIcon = (size) => {
+const AudioMuteIcon = ({size}) => {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} fill="currentColor" className="bi bi-volume-mute-fill" viewBox="0 0 16 16">
             <path d="M6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06zm7.137 2.096a.5.5 0 0 1 0 .708L12.207 8l1.647 1.646a.5.5 0 0 1-.708.708L11.5 8.707l-1.646 1.647a.5.5 0 0 1-.708-.708L10.793 8 9.146 6.354a.5.5 0 1 1 .708-.708L11.5 7.293l1.646-1.647a.5.5 0 0 1 .708 0z" />

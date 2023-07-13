@@ -31,7 +31,7 @@ async function configureProtocol() {
   // protocol already exists
   if (protocols.length > 0) {
     console.log("protocol already exists");
-   return;
+    return;
   }
   try {
     const { status: configureStatus } = await web5.dwn.protocols.configure({
@@ -108,35 +108,33 @@ export async function upsertRecord({
   var record = await getExistingRecord();
   console.log("existing record: ", record);
   if (record) {
-    var updatedRecord;
     var updateStatus;
 
+    console.log("record exists, updating...", await flattenRecord(record));
     if (dataFormat === "application/json") {
       const existingData = await record?.data?.json();
       if (!recordNullValues) {
         data = removeNullProperties(data);
       }
 
-      const { record: update, status } = await record.update({
+      const { status } = await record.update({
         data: {
           ...existingData,
           ...data,
         },
       });
-      updatedRecord = update;
       updateStatus = status;
     } else {
-      const { record: update, status } = await record.update({
+      const { status } = await record.update({
         data: data,
       });
-      updatedRecord = update;
       updateStatus = status;
     }
+    console.log("new record...", await flattenRecord(record));
 
-    const { status: sendStatus } = await updatedRecord.send(userDid);
-    console.log("send status: ", sendStatus);
-    return { record: updatedRecord, updateStatus };
-
+   // const { status: sendStatus } = await record.send(userDid);
+  //  console.log("send status: ", sendStatus);
+    return { record, updateStatus };
   } else {
     console.log("creating record with type: ", schema);
     console.log("data is: ", data);
@@ -156,8 +154,7 @@ export async function upsertRecord({
       data: data,
       message: message,
     });
-    const { status: sendStatus } = await createdRecord.send(userDid);
-    console.log("send status: ", sendStatus);
+
     return { record: createdRecord, status };
   }
 }
