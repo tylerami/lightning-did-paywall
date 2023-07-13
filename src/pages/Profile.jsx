@@ -31,6 +31,8 @@ const Profile = ({ openEditProfileModal }) => {
 
   const params = useParams();
 
+  console.log(params);
+
   const userDid = params.profileDid ?? getDid();
 
   const [blogPostsExpanded, setBlogPostsExpanded] = useState(false);

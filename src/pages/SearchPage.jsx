@@ -1,7 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import React, { useState } from "react";
 import DIDResolver from "../components/DIDResolver";
-import PostContentTile from "../components/PostContentTile";
 import ProfileTile from "../components/ProfileTile";
 import theme from "../theme";
 import PostMetadataTile from "../components/PostMetadataTile";

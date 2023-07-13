@@ -162,6 +162,7 @@ export async function upsertRecord({
     const { record: createdRecord, status } = await web5.dwn.records.create({
       data: data,
       message: message,
+      author: userDid,
     });
 
     if (status.code !== 202) {

@@ -2,7 +2,7 @@ import {
   displayImageSchema,
   profileSchema,
 } from "../schemas/paywallProtocol.js";
-import { flattenRecord, queryRecords, upsertRecord } from "./dwnService.js";
+import { flattenRecord, queryRecords, upsertRecord, userDid } from "./dwnService.js";
 
 export async function setProfileInWebNode({
   username,
@@ -16,6 +16,7 @@ export async function setProfileInWebNode({
       username,
       bio,
       lightningAddress,
+      did: userDid,
     },
     schema: profileSchema,
     protocolPath: "profile",
@@ -40,6 +41,8 @@ export async function setProfileInWebNode({
 
 export async function getProfileFromWebNode(did) {
   const profileRecord = await getProfileRecord(did);
+
+  console.log("profile record: ", await (flattenRecord(profileRecord)));
   if (!profileRecord) return null;
 
   const displayImageRecord = await getDisplayImageRecord(did);
