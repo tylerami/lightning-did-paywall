@@ -16,9 +16,10 @@ function App() {
 
   useEffect(() => {
     async function checkProfile() {
-      const existingProfile = await getProfileFromWebNode();
-      setProfile(existingProfile);
-      if (!existingProfile) {
+      await getProfileFromWebNode().then((existingProfile) =>
+        setProfile(existingProfile)
+      ).catch((e) => console.log(e));
+      if (!profile) {
         onOpen();
       }
     }

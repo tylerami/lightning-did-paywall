@@ -46,10 +46,9 @@ export async function getProfileFromWebNode(did) {
   if (!profileRecord) return null;
 
   const displayImageRecord = await getDisplayImageRecord(did);
-
-  var  displayImage;
-  if (displayImageRecord) {
-    displayImage =  await displayImageRecord?.data?.blob();
+  var displayImage;
+  if(displayImageRecord){
+    displayImage = await displayImageRecord?.data?.blob().catch((e)=>{console.log(e)});
   }
 
   return { ...(await flattenRecord(profileRecord)), displayImage };

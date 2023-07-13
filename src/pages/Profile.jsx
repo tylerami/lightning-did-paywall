@@ -172,14 +172,7 @@ const Profile = ({ openEditProfileModal }) => {
           />
           <Route
             path="/:contentId"
-            element={
-              <Flex flexDirection={"column"}>
-                <Link to="/profile">
-                  <ArrowLeftIcon />
-                </Link>
-                <PostContentTile />
-              </Flex>
-            }
+            element={<PostContentTile />}
           />
         </Routes>
       </Flex>
