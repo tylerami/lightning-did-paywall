@@ -5,9 +5,7 @@ import MultilineText from "./MultilineText";
 
 import theme from "../theme.jsx";
 import { getContentFromWebNodeIfPaid } from "../util/contentService";
-import { verifyInvoiceAndRegisterIfPaid } from "../util/lightningInvoiceService";
 import ContentPaywall from "./ContentPaywall";
-import { load } from "webfontloader";
 
 const BlogPost = ({ metadata }) => {
   const styles = theme.styles.global;
@@ -16,6 +14,7 @@ const BlogPost = ({ metadata }) => {
   const [invoice, setInvoice] = useState(null);
 
   const tryLoadContent = useCallback(async () => {
+    
     if (!metadata) return;
 
     const contentUpdate = await getContentFromWebNodeIfPaid({

@@ -31,7 +31,7 @@ async function configureProtocol() {
   // protocol already exists
   if (protocols.length > 0) {
     console.log("protocol already exists");
-    return;
+   return;
   }
   try {
     const { status: configureStatus } = await web5.dwn.protocols.configure({
@@ -108,34 +108,35 @@ export async function upsertRecord({
   var record = await getExistingRecord();
   console.log("existing record: ", record);
   if (record) {
+    var updatedRecord;
+    var updateStatus;
+
     if (dataFormat === "application/json") {
       const existingData = await record?.data?.json();
       if (!recordNullValues) {
         data = removeNullProperties(data);
       }
-      try {
-        const { record: updatedRecord, status } = await record.update({
-          data: {
-            ...existingData,
-            ...data,
-          },
-        });
-        return { record: updatedRecord, status };
-      } catch (e) {
-        console.log("error updating record: ", e);
-        return null;
-      }
+
+      const { record: update, status } = await record.update({
+        data: {
+          ...existingData,
+          ...data,
+        },
+      });
+      updatedRecord = update;
+      updateStatus = status;
     } else {
-      try {
-        const { record: updatedRecord, status } = await record.update({
-          data: data,
-        });
-        return { record: updatedRecord, status };
-      } catch (e) {
-        console.log("error updating record: ", e);
-        return null;
-      }
+      const { record: update, status } = await record.update({
+        data: data,
+      });
+      updatedRecord = update;
+      updateStatus = status;
     }
+
+    const { status: sendStatus } = await updatedRecord.send(userDid);
+    console.log("send status: ", sendStatus);
+    return { record: updatedRecord, updateStatus };
+
   } else {
     console.log("creating record with type: ", schema);
     console.log("data is: ", data);
@@ -150,17 +151,14 @@ export async function upsertRecord({
       dataFormat,
     };
     message = removeNullProperties(message);
-    console.log(message);
-    try {
-      const { record: updatedRecord, status } = await web5.dwn.records.create({
-        data: data,
-        message: message,
-      });
-      return { record: updatedRecord, status };
-    } catch (e) {
-      console.log("error creating record: ", e);
-      return null;
-    }
+
+    const { record: createdRecord, status } = await web5.dwn.records.create({
+      data: data,
+      message: message,
+    });
+    const { status: sendStatus } = await createdRecord.send(userDid);
+    console.log("send status: ", sendStatus);
+    return { record: createdRecord, status };
   }
 }
 

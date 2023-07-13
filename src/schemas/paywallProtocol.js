@@ -61,6 +61,7 @@ export const paywallProtocol = {
           of: "content/subscriber",
           can: "read",
         },
+        { who: "author", of: "content", can: "read" },
         {
           who: "anyone",
           can: "write",

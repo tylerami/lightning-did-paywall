@@ -47,6 +47,9 @@ export async function publishContentToWebNode({
       contentStatus.code
     );
     return false;
+  } else {
+    const { status: sendStatus } = await contentRecord.send(userDid);
+    console.log("content record send status: ", sendStatus);
   }
 
   // create the metadata record
@@ -71,49 +74,81 @@ export async function publishContentToWebNode({
 
   console.log("metadata record: ", metadataRecord, metadataStatus);
 
+  if (metadataStatus.code !== 202) {
+    console.log(
+      "Error creating metadata record, metadataStatus: ",
+      metadataStatus.code
+    );
+    return false;
+  } else {
+    const { status: sendStatus } = await metadataRecord.send(userDid);
+    console.log("metadata record send status: ", sendStatus);
+  }
+
   const profile = await getProfileFromWebNode();
 
-  if (!paywall) return metadataStatus?.code === 202;
+  if (paywall) {
+    // create the paywall record
+    const { record: paywallRecord, status: paywallStatus } =
+      await web5.dwn.records.create({
+        data: {
+          satsAmount: paywall.satsAmount,
+          lightningAddress:
+            paywall.lightningAddress ?? profile?.lightningAddress,
+        },
+        message: {
+          published: true,
+          contextId: contentRecord.id,
+          parentId: contentRecord.id,
+          schema: paywallSchema,
+          protocol: protocolUri,
+          protocolPath: "content/paywall",
+          dataFormat: "application/json",
+        },
+      });
 
-  // create the paywall record
-  const { record: paywallRecord, status: paywallStatus } =
-    await web5.dwn.records.create({
-      data: {
-        satsAmount: paywall.satsAmount,
-        lightningAddress: paywall.lightningAddress ?? profile?.lightningAddress,
-      },
-      message: {
-        published: true,
-        contextId: contentRecord.id,
-        parentId: contentRecord.id,
-        schema: paywallSchema,
-        protocol: protocolUri,
-        protocolPath: "content/paywall",
-        dataFormat: "application/json",
-      },
-    });
+    console.log("paywall record: ", paywallRecord, paywallStatus);
 
-  console.log("paywall record: ", paywallRecord, paywallStatus);
+    if (paywallStatus.code !== 202) {
+      console.log(
+        "Error creating paywall record, paywallStatus: ",
+        paywallStatus
+      );
+      return false;
+    } else {
+      const { status: sendStatus } = await paywallRecord.send(userDid);
+      console.log("paywall record send status: ", sendStatus);
+    }
+  }
 
-  if (!audio) return paywallStatus?.code === 202;
+  if (audio) {
+    // create the audio record
+    const { record: audioRecord, status: audioStatus } =
+      await web5.dwn.records.create({
+        data: audio,
+        message: {
+          published: false,
+          contextId: contentRecord.id,
+          parentId: contentRecord.id,
+          schema: audioSchema,
+          protocol: protocolUri,
+          protocolPath: "content/audio",
+          dataFormat: "audio/mp3",
+        },
+      });
 
-  // create the audio record
-  const { record: audioRecord, status: audioStatus } =
-    await web5.dwn.records.create({
-      data: audio,
-      message: {
-        published: false,
-        contextId: contentRecord.id,
-        parentId: contentRecord.id,
-        schema: audioSchema,
-        protocol: protocolUri,
-        protocolPath: "content/audio",
-        dataFormat: "audio/mp3",
-      },
-    });
+    console.log("audio record: ", audioRecord, audioStatus);
 
-  console.log("audio record: ", audioRecord, audioStatus);
-  return audioStatus?.code === 202;
+    if (audioStatus.code !== 202) {
+      console.log("Error creating audio record, audioStatus: ", audioStatus);
+      return false;
+    } else {
+      const { status: sendStatus } = await audioRecord.send(userDid);
+      console.log("audio record send status: ", sendStatus);
+    }
+  }
+
+  return true;
 }
 
 export async function getAllContentMetadataFromWebNode(authorDid) {
@@ -122,10 +157,10 @@ export async function getAllContentMetadataFromWebNode(authorDid) {
     from: authorDid,
   });
 
-  console.log(records);
+  if (!records) return null;
 
   return await Promise.all(
-    records.map(async (rec) => {
+    records?.map(async (rec) => {
       const paywallRecord = await queryRecords({
         schema: paywallSchema,
         parentId: rec.parentId,
@@ -140,7 +175,7 @@ export async function getAllContentMetadataFromWebNode(authorDid) {
   );
 }
 
-export async function getContentMetadataFromWebNode({contentId, authorDid}) {
+export async function getContentMetadataFromWebNode({ contentId, authorDid }) {
   const records = await queryRecords({
     from: authorDid,
     schema: metadataSchema,
@@ -238,14 +273,17 @@ export async function registerSubscriptionInWebNode({
     },
   });
   console.log("register subscription status: ", record, status);
+
+  if (status.code !== 202) {
+    console.log("Error creating subscription record, status: ", status);
+    return;
+  }
+
   const { status: receiptStatus } = await record.send(userDid);
   console.log("register subscription status: ", status, receiptStatus);
 
   return status;
 }
-
-
-
 
 export async function deleteContentFromWebNode(contentId) {
   if (!contentId) {
