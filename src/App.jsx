@@ -3,7 +3,7 @@ import "./App.css";
 import NavBar from "./components/NavBar";
 import { Navigate, Route, Routes } from "react-router-dom";
 import CreatePostPage from "./pages/CreatePostPage";
-import ViewPostsPage from "./pages/ViewPostsPage";
+import SearchPage from "./pages/SearchPage";
 import Profile from "./pages/Profile";
 import { useEffect, useState } from "react";
 import ProfileEditModal from "./components/ProfileEditModal";
@@ -35,7 +35,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/createPost" />} />
         <Route path="/createPost" element={<CreatePostPage />} />
-        <Route path="/viewPosts" element={<ViewPostsPage />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/profile/*" element={<Profile openEditProfileModal={onOpen} />} ></Route>
         <Route path="/profile/:profileDid" element={<Profile openEditProfileModal={onOpen} />} ></Route>
       </Routes>

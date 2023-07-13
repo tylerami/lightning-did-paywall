@@ -8,8 +8,8 @@ import theme from "../theme";
 const NavBar = ({profile}) => {
   const tabs = [
     {
-      text: "View Posts",
-      path: "/viewPosts",
+      text: "Search",
+      path: "/search",
     },
     {
       text: "Create Post",
