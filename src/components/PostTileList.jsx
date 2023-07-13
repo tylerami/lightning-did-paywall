@@ -24,11 +24,11 @@ const PostTileList = ({ contentList, max }) => {
             <Box h="2em" /></>
             }
             {max?
-                contentList.filter((post, i) => i < max).map((post, i) => {
+                contentList.filter((post, i) => i < max && post.type === "text").map((post, i) => {
                     return <PostTile key={i} type="text" content={{ id:post.id, title: post.title, subtitle: post.description, price: post.paywall ? post.paywall.satsAmount + " sats" : null }} />
                 })
                 :
-                contentList.map((post, i) => {
+                contentList.filter((post, i) => post.type === "text").map((post, i) => {
                     return <PostTile key={i} type="text" content={{ id:post.id, title: post.title, subtitle: post.description, price: post.paywall ? post.paywall.satsAmount + " sats" : null }} />
                 })
             }
@@ -40,8 +40,19 @@ const PostTileList = ({ contentList, max }) => {
 
             <Heading w="50%" pb="1em" borderBottom="solid 1px" borderColor={styles.brand.yellow}>Podcasts</Heading>
             <Box h="2em" />
-            <PostTile type="audio" content={{ title: "Title", price: "500 sats" }} />
-
+            {max?
+                contentList.filter((post, i) => i < max && post.type === "audio").map((post, i) => {
+                    return <PostTile key={i} type="audio" content={{ id:post.id, title: post.title, subtitle: post.description, price: post.paywall ? post.paywall.satsAmount + " sats" : null }} />
+                })
+                :
+                contentList.filter((post, i) => post.type === "audio").map((post, i) => {
+                    return <PostTile key={i} type="audio" content={{ id:post.id, title: post.title, subtitle: post.description, price: post.paywall ? post.paywall.satsAmount + " sats" : null }} />
+                })
+            }
+            { contentList.length >= max ?
+                <Link to="/profile/blog-posts"><Button variant="primary" maxW="max-content">View more</Button></Link>
+                : null
+            }
 
         </Box>
     )
