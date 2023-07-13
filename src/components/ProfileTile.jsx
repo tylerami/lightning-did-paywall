@@ -14,7 +14,7 @@ const ProfileTile = ({ profile, metadataList }) => {
 
     console.log('profile', profile);
 
-    const userDid = profile.authorDid;
+    const userDid = profile.did;
     const displayName = profile?.username;
     const userDisplayName = displayName || userDid?.substring(0, 20) + "...";
     const postCount = metadataList?.length;

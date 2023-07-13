@@ -1,6 +1,6 @@
 const baseUri = "https://lightningPaywall.app";
 
-export const protocolUri = `${baseUri}/protocolTest455`;  //42
+export const protocolUri = `${baseUri}/protocolTest460`;  //42
 
 export const contentSchema = `${baseUri}/content`;
 export const metadataSchema = `${baseUri}/metadata`;
@@ -75,8 +75,7 @@ export const paywallProtocol = {
         subscription: {
           $actions: [
             {
-              who: "author",
-              of: "content",
+              who: "anyone",
               can: "write",
             },
             {

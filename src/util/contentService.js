@@ -30,6 +30,7 @@ export async function publishContentToWebNode({
         body,
         timestamp,
         type,
+        did: userDid,
       },
       message: {
         published: false,
@@ -60,6 +61,7 @@ export async function publishContentToWebNode({
         description,
         timestamp,
         type,
+        did: userDid,
       },
       message: {
         published: true,
@@ -95,6 +97,7 @@ export async function publishContentToWebNode({
           satsAmount: paywall.satsAmount,
           lightningAddress:
             paywall.lightningAddress ?? profile?.lightningAddress,
+          did: userDid,
         },
         message: {
           published: true,
@@ -117,9 +120,7 @@ export async function publishContentToWebNode({
       return false;
     }
   } else {
-
   }
-
 
   if (audio) {
     // create the audio record
@@ -286,6 +287,7 @@ export async function registerSubscriptionInWebNode({
       paymentRequest: invoice.paymentRequest,
       preimage: invoice.preimage,
       paymentHash: invoice.paymentHash,
+      contentOwnerDid: authorDid,
     },
     author: authorDid,
     message: {
