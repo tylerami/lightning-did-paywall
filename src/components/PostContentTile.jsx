@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, IconButton, Image, Text } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
 import MultilineText from "./MultilineText";
 
@@ -14,6 +14,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { getDid } from "../util/dwnService";
 import { ArrowLeftIcon } from "@chakra-ui/icons";
 import AudioPlayer from "./AudioPlayer";
+import locked from "../assets/locked.png"
 
 const PostContentTile = ({ metadata: initialMetadata }) => {
   const styles = theme.styles.global;
@@ -97,20 +98,28 @@ const PostContentTile = ({ metadata: initialMetadata }) => {
       </>
     ) : (
       <>
-        <Heading fontFamily={"IBM Plex Sans"} fontWeight={400} size="xl">
-          {metadata.title}
+      <Flex   width="100%" direction={"column"}>
+      <Flex>
+        <Image w={10} h={10} src={locked}/>
+        <Heading size="xl" >
+        {metadata.title}
         </Heading>
-        <Box h="1em" />
-        <Heading fontFamily={"IBM Plex Sans"} fontWeight={600} size="sm">
-          {metadata.description}
+        
+      </Flex>
+      <Box h="1em" />
+        <Heading size="sm" color={styles.body.primaryFill}>
+        {metadata.description}
         </Heading>
-        <Box h="3em" />{" "}
-        {paywall && (
+        <Box w="100%" borderBottom="solid 1px #fff" m="1em 0" />
+      <Box height="2em"></Box>
+{paywall && (
           <ContentPaywall
             metadata={metadata}
             refreshContent={tryLoadContent}
           />
         )}
+      
+    </Flex>
       </>
     )}
     {profileDid === getDid() ?

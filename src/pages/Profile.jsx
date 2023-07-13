@@ -14,6 +14,8 @@ import {
   useClipboard,
 } from "@chakra-ui/react";
 import person from "../assets/person.png";
+import locked from "../assets/locked.png";
+import lightningLogo from "../assets/lightningLogo.png"
 
 import theme from "../theme";
 import { getDid } from "../util/dwnService";
@@ -162,9 +164,13 @@ const Profile = ({ openEditProfileModal }) => {
                   <Heading size="xl">{"No content to show."}</Heading>
                   <Box h="2em" />
                   <Link to="/createPost">
-                    <Button variant="primary" maxW="max-content">
-                      Create your first post
-                    </Button>
+                    { userDid === getDid() ?
+                        <Button variant="primary" maxW="max-content">
+                            Create your first post
+                        </Button>
+                        :
+                        <></>
+                    }
                   </Link>
                 </Flex>
               )
@@ -175,6 +181,50 @@ const Profile = ({ openEditProfileModal }) => {
             element={<PostContentTile />}
           />
         </Routes>
+
+        <Flex   width="100%" direction={"column"}>
+      <Flex>
+        <Image w={10} h={10} src={locked}/>
+        <Heading size="xl" >
+            Title
+        </Heading>
+        
+      </Flex>
+      <Box h="1em" />
+        <Heading size="sm" color={styles.body.primaryFill}>
+          Content description
+        </Heading>
+        <Box w="100%" borderBottom="solid 1px #fff" m="1em 0" />
+      <Box height="2em"></Box>
+
+      
+    </Flex>
+    <Flex textAlign={"center"} justifyContent={"center"} flexDirection={"column"}>
+    <Heading
+          _hover={{ cursor: "pointer", filter: "brightness(140%)" }}
+          fontWeight={600}
+          color={styles.brand.yellow}
+          size="lg"
+        >
+          {"Pay to unlock this content"}
+        </Heading>
+        <Heading
+          _hover={{ cursor: "pointer", filter: "brightness(140%)" }}
+          color={styles.brand.cyan}
+          size="md"
+          m="1em 0"
+        >
+          {`Price: ? sats`}
+        </Heading>
+        <Button
+          variant="primary"
+          size="lg"
+          w="max-content"
+          alignSelf={"center"}
+        >
+         Unlock Now
+        </Button>
+      </Flex>
       </Flex>
     </Flex>
   );
