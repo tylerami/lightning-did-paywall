@@ -112,10 +112,10 @@ const CreatePostPage = () => {
       minWidth={"50em"}
       width="70vw"
       direction="column"
-      padding={"2em"}
+      padding={"2rem"}
     >
       <Flex
-        padding="3em"
+     
         borderRadius="0.2em"
         width="100%"
         direction={"column"}

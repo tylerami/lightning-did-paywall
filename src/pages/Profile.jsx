@@ -54,7 +54,7 @@ const Profile = ({ profile, openEditProfileModal }) => {
             padding={"2em"}
         >
             <Flex
-                padding="3em"
+      
                 borderRadius="0.2em"
                 width="100%"
                 direction={"column"}
