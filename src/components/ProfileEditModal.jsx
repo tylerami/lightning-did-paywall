@@ -33,7 +33,7 @@ const ProfileEditModal = ({ onClose, profile, setProfile }) => {
     hiddenFileInput.current.click();
   };
 
-  const handleCreateProfile = () => {
+  const handleCreateProfile = async () => {
     const profileUpdate = {
       username: displayName,
       bio,
@@ -41,7 +41,8 @@ const ProfileEditModal = ({ onClose, profile, setProfile }) => {
       displayImage: selectedImage,
     };
     setProfileInWebNode(profileUpdate);
-    setProfile(profileUpdate);
+    console.log('profileUpdate', profileUpdate  );
+    setProfile({...profileUpdate, displayImage: selectedImage ?? profile?.displayImage});
     onClose();
   };
 

@@ -26,10 +26,12 @@ import PostMetadataTileList from "../components/PostMetadataTileList";
 import PostContentTile from "../components/PostContentTile";
 import { getProfileFromWebNode } from "../util/profileService";
 
-const Profile = ({ openEditProfileModal }) => {
+const Profile = ({ openEditProfileModal, profile: initialProfile }) => {
   const styles = theme.styles.global;
 
-  const [profile, setProfile] = useState(null);
+  console.log("passed profile: ", initialProfile);
+
+  const [profile, setProfile] = useState(initialProfile);
 
   const params = useParams();
 
@@ -48,6 +50,12 @@ const Profile = ({ openEditProfileModal }) => {
 
     getProfile();
   }, [userDid]);
+
+  useEffect(() => {
+    setProfile(initialProfile);
+
+    console.log("profile updated: ", initialProfile);
+  }, [initialProfile]);
 
   const [contentList, setContentList] = useState([]);
   const displayName = profile?.username;
@@ -77,7 +85,7 @@ const Profile = ({ openEditProfileModal }) => {
     >
       <Flex borderRadius="0.2em" width="100%" direction={"column"}>
         {profile?.displayImage ? (
-          <Image src={URL.createObjectURL(profile?.displayImage)} w={32} />
+          <Image  borderRadius="100%" src={URL.createObjectURL(profile?.displayImage)} w={32} />
         ) : (
           <Image src={person} w={32} />
         )}

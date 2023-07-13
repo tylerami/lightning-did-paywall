@@ -25,18 +25,22 @@ const PostContentTile = ({ metadata: initialMetadata }) => {
 
   const navigate = useNavigate();
 
-  const { contentId, profileDid} = useParams();
+  const { contentId, profileDid } = useParams();
 
   async function getMetadata() {
     if (metadata) return metadata;
-    const metadataUpdate = await getContentMetadataFromWebNode({ contentId, authorDid: profileDid});
+    const metadataUpdate = await getContentMetadataFromWebNode({
+      contentId,
+      authorDid: profileDid,
+    });
     setMetadata(metadataUpdate);
     return metadataUpdate;
   }
 
-
   const tryLoadContent = useCallback(async () => {
     const metadata = await getMetadata();
+    if (!metadata) return;
+
     const contentUpdate = await getContentFromWebNodeIfPaid({
       contentId: metadata.parentId,
       authorDid: metadata.authorDid,

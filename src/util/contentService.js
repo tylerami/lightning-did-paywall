@@ -118,8 +118,10 @@ export async function publishContentToWebNode({
         paywallStatus
       );
       return false;
+    } else {
+      const { status: paywallSendStatus } = await paywallRecord.send(userDid);
+      console.log("paywall send status: ", paywallSendStatus);
     }
-  } else {
   }
 
   if (audio) {
@@ -282,6 +284,26 @@ export async function registerSubscriptionInWebNode({
     throw new Error("Invoice paymentRequest is required");
   if (!invoice?.paymentHash) throw new Error("Invoice paymentHash is required");
 
+  console.log(
+    "registerSubscriptionInWebNode: ",
+    metadataId,
+    authorDid,
+    invoice
+  );
+
+  const { record: metadataRecord, status: metadataStatus } =
+    await web5.dwn.records.read({
+      from: authorDid,
+      message: {
+        recordId: metadataId,
+      },
+    });
+
+    console.log("metadataRecord: ", metadataRecord, metadataStatus);
+
+  const {status: sendStatus} = await metadataRecord.send(userDid);
+  console.log("sendStatus: ", sendStatus);
+
   var { record, status } = await web5.dwn.records.create({
     data: {
       paymentRequest: invoice.paymentRequest,
@@ -289,7 +311,6 @@ export async function registerSubscriptionInWebNode({
       paymentHash: invoice.paymentHash,
       contentOwnerDid: authorDid,
     },
-    author: authorDid,
     message: {
       protocol: protocolUri,
       protocolPath: "content/metadata/subscription",

@@ -35,10 +35,11 @@ const ContentPaywall = ({ metadata, refreshContent }) => {
     async function pollInvoice() {
       if (!invoice) return;
       console.log("polling invoice: ", invoice);
+      console.log('metadata', metadata);
       const isPaid = await verifyInvoiceAndRegisterIfPaid({
         invoice,
-        contentId: metadata.id,
-        authorDid: metadata.authorDid,
+        metadataId: metadata.id,
+        authorDid: metadata.did,
       });
       console.log("isPaid: ", isPaid);
       if (isPaid) {
@@ -60,7 +61,8 @@ const ContentPaywall = ({ metadata, refreshContent }) => {
 
   async function handleCreateInvoice() {
     if (!metadata?.paywall) return;
-
+      console.log('metadata?.paywall', metadata?.paywall);
+      console.log(metadata, 'metadata');
     const invoice = await createInvoice(metadata?.paywall);
     if (!invoice) return;
 

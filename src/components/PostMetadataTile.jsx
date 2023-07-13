@@ -28,7 +28,7 @@ const PostMetadataTile = ({ metadata }) => {
                 <Heading size="sm" p="8px 0" color={styles.brand.cyan}>{getPriceText()}</Heading>
                 <Text color={styles.body.primaryFill}>{metadata.description.substring(0,100)+"..."}</Text>
             </Flex>
-            <Link to={`/profile/${metadata.authorDid}/${metadata.parentId}`}><ArrowRightIcon color={styles.brand.yellow} alignSelf="center"/></Link>
+            <Link to={`/profile/${metadata.did}/${metadata.parentId}`}><ArrowRightIcon color={styles.brand.yellow} alignSelf="center"/></Link>
         </Flex>
       );
   }
@@ -40,7 +40,7 @@ const PostMetadataTile = ({ metadata }) => {
             <Heading size="sm" p="8px 0" color={styles.brand.cyan}>{getPriceText()}</Heading>
             <AudioPlayer/>
         </Flex>
-        <Link to={`/profile/${metadata.authorDid}/${metadata.parentId}`}><ArrowRightIcon color={styles.brand.yellow} alignSelf="center" mr={0}/></Link>
+        <Link to={`/profile/${metadata.did}/${metadata.parentId}`}><ArrowRightIcon color={styles.brand.yellow} alignSelf="center" mr={0}/></Link>
     </Flex>
     );
   }

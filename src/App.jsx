@@ -26,6 +26,8 @@ function App() {
     checkProfile();
   }, [onOpen]);
 
+
+
   return (
     <Flex direction={"column"}>
       <NavBar profile={profile} />
@@ -37,8 +39,8 @@ function App() {
         <Route path="/" element={<Navigate to="/createPost" />} />
         <Route path="/createPost" element={<CreatePostPage />} />
         <Route path="/search" element={<SearchPage />} />
-        <Route path="/profile/*" element={<Profile openEditProfileModal={onOpen} />} ></Route>
-        <Route path="/profile/:profileDid/*" element={<Profile openEditProfileModal={onOpen} />} ></Route>
+        <Route path="/profile/*"  element={<Profile profile={profile} openEditProfileModal={onOpen} />} ></Route>
+        <Route path="/profile/:profileDid/*" element={<Profile  openEditProfileModal={onOpen} />} ></Route>
       </Routes>
     </Flex>
   );

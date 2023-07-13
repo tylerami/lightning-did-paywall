@@ -57,7 +57,13 @@ export async function flattenRecord(record) {
   if (!record) return null;
   if (!record.data) return null;
 
-  const data = await record?.data?.json();
+  var data;
+  console.log("record data: ", record);
+  try {
+   data = await record?.data?.json();
+  } catch (e) {
+    console.log("error parsing record data: ", e)
+  }
   return {
     id: record.id,
     parentId: record.parentId,
@@ -118,7 +124,6 @@ export async function upsertRecord({
   if (record) {
     var updateStatus;
 
-    console.log("record exists, updating...", await flattenRecord(record));
     if (dataFormat === "application/json") {
       const existingData = await record?.data?.json();
       if (!recordNullValues) {
@@ -138,7 +143,6 @@ export async function upsertRecord({
       });
       updateStatus = status;
     }
-    console.log("new record...", await flattenRecord(record));
 
     const { status: sendStatus } = await record.send(userDid);
     console.log("send status: ", sendStatus);
@@ -162,7 +166,6 @@ export async function upsertRecord({
     const { record: createdRecord, status } = await web5.dwn.records.create({
       data: data,
       message: message,
-      author: userDid,
     });
 
     if (status.code !== 202) {
