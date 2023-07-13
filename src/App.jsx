@@ -18,7 +18,6 @@ function App() {
     async function checkProfile() {
       const existingProfile = await getProfileFromWebNode();
       setProfile(existingProfile);
-      console.log(existingProfile);
       if (!existingProfile) {
         onOpen();
       }
@@ -37,7 +36,8 @@ function App() {
         <Route path="/" element={<Navigate to="/createPost" />} />
         <Route path="/createPost" element={<CreatePostPage />} />
         <Route path="/viewPosts" element={<ViewPostsPage />} />
-        <Route path="/profile/*" element={<Profile openEditProfileModal={onOpen} profile={profile} />} ></Route>
+        <Route path="/profile/*" element={<Profile openEditProfileModal={onOpen} />} ></Route>
+        <Route path="/profile/:profileDid" element={<Profile openEditProfileModal={onOpen} />} ></Route>
       </Routes>
     </Flex>
   );

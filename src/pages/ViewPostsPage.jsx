@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import React, { useState } from "react";
 import DIDResolver from "../components/DIDResolver";
-import BlogPost from "../components/BlogPost";
+import PostContentTile from "../components/PostContentTile";
 import ContentPaywall from "../components/ContentPaywall";
 
 const ViewPostsPage = () => {
@@ -20,7 +20,7 @@ const ViewPostsPage = () => {
       <Box h="3em" borderBottom="solid 1px #444"></Box>
 
       {metadataList.map((content, index) => (
-        <BlogPost key={index} metadata={content} />
+        <PostContentTile key={index} metadata={content} />
       ))}
     </Flex>
   );

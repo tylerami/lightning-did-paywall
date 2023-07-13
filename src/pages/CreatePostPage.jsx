@@ -46,6 +46,24 @@ const CreatePostPage = () => {
   const [lightningAddress, setLightningAddress] = useState("");
   const [satsAmount, setSatsAmount] = useState("");
 
+  const [contentType, setContentType] = useState("text");
+
+  function toggleContentType() {
+    if (contentType === "text") {
+      setContentType("audio");
+    } else {
+      setContentType("text");
+    }
+  }
+
+  function typeIsText() {
+    return contentType === "text";
+  }
+
+  function typeIsAudio() {
+    return contentType === "audio";
+  }
+
   const [selectedMediaFile, setSelectedMediaFile] = useState(null);
 
   const hiddenFileInput = React.useRef(null);
@@ -82,9 +100,9 @@ const CreatePostPage = () => {
       await publishContentToWebNode({
         title,
         description: subtitle,
-        body,
+        body: typeIsText() ? body : null,
         paywall: getPaywall(),
-        audio: selectedMediaFile,
+        audio: typeIsAudio() ? selectedMediaFile : null,
       })
     ) {
       setModalMessage("Content published!");
@@ -114,12 +132,7 @@ const CreatePostPage = () => {
       direction="column"
       padding={"2rem"}
     >
-      <Flex
-     
-        borderRadius="0.2em"
-        width="100%"
-        direction={"column"}
-      >
+      <Flex borderRadius="0.2em" width="100%" direction={"column"}>
         <Flex w="100%">
           <Heading size="2xl">Content Creator</Heading>
           <Flex
@@ -172,10 +185,12 @@ const CreatePostPage = () => {
           border="1px solid lightgray"
         />
         <Box h={"1em"} />
-        <Input
+        <Textarea
+          minHeight={"4em"}
           value={subtitle}
           p="1rem"
-          size="md"
+          size="lg"
+          color={styles.body.secondaryFill}
           onChange={(e) => setSubtitle(e.target.value)}
           placeholder="Description"
           fontFamily={"IBM Plex Mono"}
@@ -183,44 +198,67 @@ const CreatePostPage = () => {
           border="1px solid lightgray"
         />
         <Box h={"1em"} />
-        <Textarea
-          minHeight={"18em"}
-          value={body}
-          p="1rem"
-          size="lg"
-          color={styles.body.secondaryFill}
-          onChange={(e) => setBody(e.target.value)}
-          placeholder="Body"
-          fontFamily={"IBM Plex Mono"}
-          _focus={{ borderColor: styles.brand.cyan }}
-          border="1px solid lightgray"
-        />
+        <Flex alignItems={"center"} justifyContent={"center"}>
+          {" "}
+          <Heading opacity={typeIsText() ? 1 : 0.6} size="lg">
+            Blog Post
+          </Heading>
+          <Box w={"1em"} />
+          <Switch
+          
+            isChecked={typeIsAudio()}
+            onChange={() => toggleContentType()}
+            colorScheme="gray"
+            size="lg"
+          />
+          <Box w={"1em"} />
+          <Heading opacity={typeIsAudio() ? 1 : 0.6} size="lg">
+            Podcast
+          </Heading>
+        </Flex>
         <Box h={"1em"} />
-        <Box>
-          <Input
-            value={`Selected media:  ${
-              selectedMediaFile?.name ?? "No file selected"
-            }`}
-            cursor={"pointer"}
-            isReadOnly
+        {typeIsText() && (
+          <Textarea
+            minHeight={"15em"}
+            value={body}
             p="1rem"
-            size="md"
-            onClick={handleSelectFile}
+            size="lg"
+            color={styles.body.secondaryFill}
+            onChange={(e) => setBody(e.target.value)}
+            placeholder="Body"
             fontFamily={"IBM Plex Mono"}
             _focus={{ borderColor: styles.brand.cyan }}
             border="1px solid lightgray"
           />
-          <Input
-            ref={hiddenFileInput}
-            display={"none"}
-            type="file"
-            accept="audio/*"
-            onChange={(e) => {
-              setSelectedMediaFile(e.target.files[0]);
-            }}
-          />
-        </Box>
+        )}
         <Box h={"1em"} />
+        {typeIsAudio() && (
+          <Box>
+            <Input
+              value={`Selected media:  ${
+                selectedMediaFile?.name ?? "No file selected"
+              }`}
+              cursor={"pointer"}
+              isReadOnly
+              p="1rem"
+              size="md"
+              onClick={handleSelectFile}
+              fontFamily={"IBM Plex Mono"}
+              _focus={{ borderColor: styles.brand.cyan }}
+              border="1px solid lightgray"
+            />
+            <Input
+              ref={hiddenFileInput}
+              display={"none"}
+              type="file"
+              accept="audio/*"
+              onChange={(e) => {
+                setSelectedMediaFile(e.target.files[0]);
+              }}
+            />
+          </Box>
+        )}
+        <Box h={"2em"} />
         <Flex alignItems={"center"} justifyContent={"center"}>
           {" "}
           <Heading size="md">Paywall</Heading>
@@ -260,7 +298,7 @@ const CreatePostPage = () => {
             </Flex>
           )}
         </Flex>
-        <Box h={"1em"} />
+        <Box h={"2em"} />
 
         <Modal size="xl" isOpen={isOpen} onClose={onClose}>
           <ModalOverlay width="200em" />

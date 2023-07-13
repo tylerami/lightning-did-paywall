@@ -89,7 +89,6 @@ const ProfileEditModal = ({ onClose, profile, setProfile }) => {
             type="file"
             accept="image/png, image/jpeg"
             onChange={(e) => {
-              console.log(e.target.files[0]);
               setSelectedImage(e.target.files[0]);
             }}
           />

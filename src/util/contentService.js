@@ -163,7 +163,7 @@ export async function getAllContentMetadataFromWebNode(authorDid) {
   );
 }
 
-export async function getContentMetadataFromWebNode({ contentId, authorDid }) {
+async function getContentMetadataRecord({ contentId, authorDid }) {
   const records = await queryRecords({
     from: authorDid,
     schema: metadataSchema,
@@ -176,11 +176,20 @@ export async function getContentMetadataFromWebNode({ contentId, authorDid }) {
     return null;
   }
 
+  return record;
+}
+
+export async function getContentMetadataFromWebNode({ contentId, authorDid }) {
+  const record = await getContentMetadataRecord({ contentId, authorDid });
+
+  if (!record) return null;
+
   const paywallRecord = await queryRecords({
     schema: paywallSchema,
     parentId: contentId,
     from: authorDid,
   });
+
 
   return {
     ...(await flattenRecord(record)),
@@ -188,18 +197,8 @@ export async function getContentMetadataFromWebNode({ contentId, authorDid }) {
   };
 }
 
-export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
-  // Read the content record
-  if (!contentId) {
-    console.log("contentId is required");
-    return null;
-  }
-  if (!authorDid) {
-    console.log("authorDid is required");
-    return null;
-  }
-
-  const request = {
+async function getContentRecord({ contentId, authorDid }) {
+  var request = {
     message: {
       recordId: contentId,
     },
@@ -208,6 +207,8 @@ export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
   if (authorDid && authorDid !== userDid) {
     request.from = authorDid;
   }
+
+  console.log("request: ", request);
 
   const { record: contentRecord, status: contentStatus } =
     await web5.dwn.records.read(request);
@@ -221,17 +222,45 @@ export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
     return null;
   }
 
-  // get the audio record
-  const audioRecords = await queryRecords({
+  return contentRecord;
+}
+
+async function getAudioRecord({ contentId, authorDid }) {
+  const records = await queryRecords({
     schema: audioSchema,
     parentId: contentId,
     from: authorDid,
   });
 
-  const audioBinary = await flattenRecord(audioRecords?.at(0));
+  const record = records?.at(0);
+  if (!record) {
+    console.log("No audio record found for contentId: ", contentId);
+    return null;
+  }
+
+  return record;
+}
+
+export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
+  // Read the content record
+  if (!contentId) {
+    console.log("contentId is required");
+    return null;
+  }
+  if (!authorDid) {
+    console.log("authorDid is required");
+    return null;
+  }
+
+  const contentRecord = await getContentRecord({ contentId, authorDid });
+  if (!contentRecord) return null;
+
+  // get the audio record
+  const audioRecord = await getAudioRecord({ contentId, authorDid });
+
   return {
     ...(await flattenRecord(contentRecord)),
-    audio: audioBinary,
+    audio: await flattenRecord(audioRecord),
   };
 }
 
@@ -275,6 +304,16 @@ export async function deleteContentFromWebNode(contentId) {
     console.log("contentId is required");
     return;
   }
+
+  const metadataRecord = await getContentMetadataRecord({ contentId });
+  if (!metadataRecord) {
+    console.log("No metadata found for contentId: ", contentId);
+    return;
+  }
+  metadataRecord.delete();
+
+  const audioRecord = await getAudioRecord({ contentId });
+  if (audioRecord) audioRecord.delete();
 
   const { record, status } = await web5.dwn.records.read({
     message: {
