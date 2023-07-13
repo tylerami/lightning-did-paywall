@@ -1,13 +1,16 @@
-import { Flex, Heading, Text } from "@chakra-ui/react";
-import React from "react";
+import { Flex, Heading, IconButton, Text } from "@chakra-ui/react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import theme from "../theme.jsx";
 import { ArrowRightIcon } from "@chakra-ui/icons";
 import AudioPlayer from "./AudioPlayer.jsx";
+import { Link, useParams } from "react-router-dom";
+import { getContentFromWebNodeIfPaid, getContentMetadataFromWebNode } from "../util/contentService.js";
 
 const PostTile = ({ type, content }) => {
 
   const styles = theme.styles.global;
+
 
 
   if(type==="text"){
@@ -18,8 +21,7 @@ const PostTile = ({ type, content }) => {
                 <Heading size="sm" p="8px 0" color={styles.brand.cyan}>{content.price}</Heading>
                 <Text color={styles.body.primaryFill}>{content.subtitle.substring(0,100)+"..."}</Text>
             </Flex>
-            
-            <ArrowRightIcon color={styles.brand.yellow} alignSelf="center"/>
+            <Link to={"/profile/"+content.id}><ArrowRightIcon color={styles.brand.yellow} alignSelf="center"/></Link>
         </Flex>
       );
   }
@@ -31,7 +33,7 @@ const PostTile = ({ type, content }) => {
             <Heading size="sm" p="8px 0" color={styles.brand.cyan}>{content.price}</Heading>
             <AudioPlayer/>
         </Flex>
-        <ArrowRightIcon color={styles.brand.yellow} alignSelf="center" mr={0}/>
+        <Link to={"/profile/"+content.id}><ArrowRightIcon color={styles.brand.yellow} alignSelf="center" mr={0}/></Link>
     </Flex>
     );
   }
