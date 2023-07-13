@@ -6,7 +6,7 @@ import ProfileTile from "../components/ProfileTile";
 import theme from "../theme";
 import PostMetadataTile from "../components/PostMetadataTile";
 
-const ViewPostsPage = () => {
+const SearchPage = () => {
 
   const styles = theme.styles.global;
 
@@ -38,4 +38,4 @@ const ViewPostsPage = () => {
   );
 };
 
-export default ViewPostsPage;
+export default SearchPage;
