@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -17,9 +17,12 @@ import person from "../assets/person.png";
 
 import theme from "../theme";
 import { getDid } from "../util/dwnService";
-import { CopyIcon, EditIcon } from "@chakra-ui/icons";
-import { Link } from "react-router-dom";
+import { ArrowLeftIcon, CopyIcon, EditIcon } from "@chakra-ui/icons";
+import { Link, Route, Routes } from "react-router-dom";
 import PostTile from "../components/PostTile";
+import { getAllContentMetadataFromWebNode } from "../util/contentService";
+import PostTileList from "../components/PostTileList";
+import BlogPost from "../components/BlogPost";
 
 const Profile = ({ profile, openEditProfileModal }) => {
     const styles = theme.styles.global;
@@ -30,7 +33,17 @@ const Profile = ({ profile, openEditProfileModal }) => {
     const userDisplayName = displayName || userDid.substring(0, 20) + "...";
 
     const { hasCopied, onCopy } = useClipboard(getDid());
-
+    const tryLoadContent = useCallback(async () => {
+        const contentUpdate = await getAllContentMetadataFromWebNode(userDid);
+        setContentList(contentUpdate);
+        console.log(contentUpdate);
+        console.log(contentUpdate[0]);
+      }, []);
+    
+    // Load content on mount
+    useEffect(() => {
+        tryLoadContent();
+    }, []);
     return (
         <Flex
             alignSelf={"center"}
@@ -99,37 +112,20 @@ const Profile = ({ profile, openEditProfileModal }) => {
                     {profile?.bio ?? "Bio goes here"}
                 </Text>
                 <Box h="2em" />
-                <Heading w="50%" pb="1em" borderBottom="solid 1px" borderColor={styles.brand.yellow}>Blog posts</Heading>
-                <Box h="2em" />
-
-
-                <PostTile type="text" content={{ title: "Title", price: "500 sats", subtitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis" }} />
-                <PostTile type="text" content={{ title: "Title", price: "500 sats", subtitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis" }} />
-
-                <Button variant="primary" maxW="max-content">View more</Button>
-                <Box h="4em" />
-                
-                <Heading w="50%" pb="1em" borderBottom="solid 1px" borderColor={styles.brand.yellow}>Podcasts</Heading>
-                <Box h="2em" />
-                <PostTile type="audio" content={{ title: "Title", price: "500 sats"}} />
-
-
                 
 
-                {contentList.length === 0 ?
-                    <Flex mt="4em" alignItems="center" textAlign="center" direction="column">
-                        <Heading size="xl" >{"No content to show."}</Heading>
-                        <Box h="2em" />
-                        <Link to="/createPost">
-                            <Button variant="primary" maxW="max-content">Create your first post</Button>
-                        </Link>
-                    </Flex>
-                    :
-                    contentList.map(post =>
-                        <></>)
-                }
-
-
+                <Routes>
+                    <Route path="/" element={<PostTileList contentList={contentList} max={3}/>} />
+                    <Route path="/blog-posts" element={<PostTileList contentList={contentList} max={null}/>} />
+                    <Route path="/:contentId" element={
+                        <Flex flexDirection={"column"}>
+                            <Link to="/profile"><ArrowLeftIcon/></Link>
+                            <BlogPost/>
+                        </Flex>
+                        
+                    } />
+                </Routes>
+                
             </Flex>
         </Flex>
 

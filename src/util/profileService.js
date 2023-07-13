@@ -21,11 +21,9 @@ export async function setProfileInWebNode({
     protocolPath: "profile",
     published: true,
   });
-  console.log("profile response", response);
   if (!response || !displayImage) return response;
   const profileRecord = response.record;
 
-  console.log(profileRecord);
   const displayImageResponse = await upsertRecord({
     getExistingRecord: getDisplayImageRecord,
     data: displayImage,
@@ -35,7 +33,6 @@ export async function setProfileInWebNode({
     dataFormat: "image/png",
     published: true,
   });
-  console.log("image response", displayImageResponse);
   return displayImageResponse;
 }
 
@@ -46,7 +43,6 @@ export async function getProfileFromWebNode(did) {
 
   const displayImageRecord = await getDisplayImageRecord(did);
   const displayImage = await displayImageRecord?.data?.blob();
-  console.log("display image", displayImage);
 
   return { ...(await flattenRecord(profileRecord)), displayImage };
 }
