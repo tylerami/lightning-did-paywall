@@ -33,13 +33,16 @@ async function configureProtocol() {
     console.log("protocol already exists");
     return;
   }
-
-  const { status: configureStatus } = await web5.dwn.protocols.configure({
-    message: {
-      definition: paywallProtocol,
-    },
-  });
-  console.log("configure protocol status", configureStatus);
+  try {
+    const { status: configureStatus } = await web5.dwn.protocols.configure({
+      message: {
+        definition: paywallProtocol,
+      },
+    });
+    console.log("configure protocol status", configureStatus);
+  } catch (e) {
+    console.log("error configuring protocol: ", e);
+  }
 }
 
 configureProtocol();
@@ -83,9 +86,13 @@ export async function queryRecords({
   if (from && from !== userDid) {
     query.from = from;
   }
-
-  const result = await web5.dwn.records.query(query);
-  return result?.records;
+  try {
+    const result = await web5.dwn.records.query(query);
+    return result?.records;
+  } catch (e) {
+    console.log("error querying records: ", e);
+    return null;
+  }
 }
 
 export async function upsertRecord({
@@ -106,18 +113,28 @@ export async function upsertRecord({
       if (!recordNullValues) {
         data = removeNullProperties(data);
       }
-      const { record: updatedRecord, status } = await record.update({
-        data: {
-          ...existingData,
-          ...data,
-        },
-      });
-      return { record: updatedRecord, status };
+      try {
+        const { record: updatedRecord, status } = await record.update({
+          data: {
+            ...existingData,
+            ...data,
+          },
+        });
+        return { record: updatedRecord, status };
+      } catch (e) {
+        console.log("error updating record: ", e);
+        return null;
+      }
     } else {
-      const { record: updatedRecord, status } = await record.update({
-        data: data,
-      });
-      return { record: updatedRecord, status };
+      try {
+        const { record: updatedRecord, status } = await record.update({
+          data: data,
+        });
+        return { record: updatedRecord, status };
+      } catch (e) {
+        console.log("error updating record: ", e);
+        return null;
+      }
     }
   } else {
     console.log("creating record with type: ", schema);
@@ -134,11 +151,16 @@ export async function upsertRecord({
     };
     message = removeNullProperties(message);
     console.log(message);
-    const { record: updatedRecord, status } = await web5.dwn.records.create({
-      data: data,
-      message: message,
-    });
-    return { record: updatedRecord, status };
+    try {
+      const { record: updatedRecord, status } = await web5.dwn.records.create({
+        data: data,
+        message: message,
+      });
+      return { record: updatedRecord, status };
+    } catch (e) {
+      console.log("error creating record: ", e);
+      return null;
+    }
   }
 }
 
