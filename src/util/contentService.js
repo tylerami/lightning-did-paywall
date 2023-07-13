@@ -47,6 +47,9 @@ export async function publishContentToWebNode({
       contentStatus.code
     );
     return false;
+  } else {
+    const { status: contentSendStatus } = await contentRecord.send(userDid);
+    console.log("content send status: ", contentSendStatus);
   }
 
   // create the metadata record
@@ -77,6 +80,9 @@ export async function publishContentToWebNode({
       metadataStatus.code
     );
     return false;
+  } else {
+    const { status: metadataSendStatus } = await metadataRecord.send(userDid);
+    console.log("metadata send status: ", metadataSendStatus);
   }
 
   const profile = await getProfileFromWebNode();
@@ -110,7 +116,10 @@ export async function publishContentToWebNode({
       );
       return false;
     }
+  } else {
+
   }
+
 
   if (audio) {
     // create the audio record
@@ -189,7 +198,6 @@ export async function getContentMetadataFromWebNode({ contentId, authorDid }) {
     parentId: contentId,
     from: authorDid,
   });
-
 
   return {
     ...(await flattenRecord(record)),
@@ -297,7 +305,7 @@ export async function registerSubscriptionInWebNode({
   }
 
   //const {status: sendToUserStatus} = await record.send(userDid);
-  const {status: sendToAuthorStatus} = await record.send(authorDid);
+  const { status: sendToAuthorStatus } = await record.send(authorDid);
 
   //console.log("sendToUserStatus: ", sendToUserStatus);
   console.log("sendToAuthorStatus: ", sendToAuthorStatus);

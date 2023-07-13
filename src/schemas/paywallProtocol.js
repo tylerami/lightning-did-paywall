@@ -1,6 +1,6 @@
 const baseUri = "https://lightningPaywall.app";
 
-export const protocolUri = `${baseUri}/protocolTest43`;  //42
+export const protocolUri = `${baseUri}/protocolTest44`;  //42
 
 export const contentSchema = `${baseUri}/content`;
 export const metadataSchema = `${baseUri}/metadata`;

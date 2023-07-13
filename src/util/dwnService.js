@@ -133,8 +133,9 @@ export async function upsertRecord({
     }
     console.log("new record...", await flattenRecord(record));
 
-   // const { status: sendStatus } = await record.send(userDid);
-  //  console.log("send status: ", sendStatus);
+    const { status: sendStatus } = await record.send(userDid);
+    console.log("send status: ", sendStatus);
+
     return { record, updateStatus };
   } else {
     console.log("creating record with type: ", schema);
@@ -155,6 +156,14 @@ export async function upsertRecord({
       data: data,
       message: message,
     });
+
+    if (status.code !== 202) {
+      console.log("error creating record: ", status);
+      return { record: null, status };
+    } else {
+      const { status: sendStatus } = await createdRecord.send(userDid);
+      console.log("send status: ", sendStatus);
+    }
 
     return { record: createdRecord, status };
   }
