@@ -17,7 +17,6 @@ const PostContentTile = ({ metadata: initialMetadata }) => {
   const styles = theme.styles.global;
 
   const [content, setContent] = useState(null);
-  const [invoice, setInvoice] = useState(null);
   const [metadata, setMetadata] = useState(initialMetadata);
   const [paywall, setPaywall] = useState(null);
 

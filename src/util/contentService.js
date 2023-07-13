@@ -296,6 +296,12 @@ export async function registerSubscriptionInWebNode({
     return;
   }
 
+  //const {status: sendToUserStatus} = await record.send(userDid);
+  const {status: sendToAuthorStatus} = await record.send(authorDid);
+
+  //console.log("sendToUserStatus: ", sendToUserStatus);
+  console.log("sendToAuthorStatus: ", sendToAuthorStatus);
+
   return status;
 }
 

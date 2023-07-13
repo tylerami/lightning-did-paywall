@@ -88,6 +88,7 @@ export async function queryRecords({
   }
   try {
     const result = await web5.dwn.records.query(query);
+    console.log(result);
     return result?.records;
   } catch (e) {
     console.log("error querying records: ", e);
