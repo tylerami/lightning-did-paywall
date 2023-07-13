@@ -37,7 +37,7 @@ function App() {
         <Route path="/createPost" element={<CreatePostPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/profile/*" element={<Profile openEditProfileModal={onOpen} />} ></Route>
-        <Route path="/profile/:profileDid" element={<Profile openEditProfileModal={onOpen} />} ></Route>
+        <Route path="/profile/:profileDid/*" element={<Profile openEditProfileModal={onOpen} />} ></Route>
       </Routes>
     </Flex>
   );

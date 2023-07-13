@@ -22,11 +22,11 @@ const PostContentTile = ({ metadata: initialMetadata }) => {
 
   const navigate = useNavigate();
 
-  const { contentId, authorDid} = useParams();
+  const { contentId, profileDid} = useParams();
 
   async function getMetadata() {
     if (metadata) return metadata;
-    const metadataUpdate = await getContentMetadataFromWebNode({ contentId, authorDid});
+    const metadataUpdate = await getContentMetadataFromWebNode({ contentId, authorDid: profileDid});
     setMetadata(metadataUpdate);
     return metadataUpdate;
   }

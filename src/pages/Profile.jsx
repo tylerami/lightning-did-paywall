@@ -62,7 +62,6 @@ const Profile = ({ openEditProfileModal }) => {
     tryLoadContent();
   }, [tryLoadContent, params]);
 
-
   return (
     <Flex
       alignSelf={"center"}
@@ -170,7 +169,7 @@ const Profile = ({ openEditProfileModal }) => {
             }
           />
           <Route
-            path="/:authorDid/:contentId"
+            path="/:contentId"
             element={
               <Flex flexDirection={"column"}>
                 <Link to="/profile">
