@@ -10,12 +10,13 @@ const ProfileTile = ({ profile, metadataList }) => {
 
     const styles = theme.styles.global;
 
+    if(!profile){return null}
+
     const userDid = profile.authorDid;
     const displayName = profile?.username;
     const userDisplayName = displayName || userDid?.substring(0, 20) + "...";
     const postCount = metadataList?.length;
 
-    if(!profile){return null}
 
     return (
         <Flex p="1em" mb="1em"  >
@@ -32,7 +33,7 @@ const ProfileTile = ({ profile, metadataList }) => {
                 <Text mb="2em" color={styles.body.primaryFill}>{profile.bio}</Text>
             </Flex>
             </Flex>
-            <Link to={"/profile/:did"}><ArrowRightIcon color={styles.brand.yellow} alignSelf="center" /></Link>
+            <Link to={"/profile/"+userDid}><ArrowRightIcon color={styles.brand.yellow} alignSelf="center" /></Link>
         </Flex>
     );
 };
