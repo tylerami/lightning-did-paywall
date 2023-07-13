@@ -1,52 +1,88 @@
-import { Box, Flex, Progress, Text } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Progress, Text } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import "../App.css";
 import theme from "../theme";
+import audio from "../assets/test.mp3"
 
-const AudioPlayer = () => {
+const AudioPlayer = ({/* audio */}) => {
 
     const [isPlaying, setIsPlaying] = useState(false);
-    const [audio, setAudio] = useState(null);
     const [progress, setProgress] = useState(0);
     const [isMute, setIsMuse] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0)
+    const [duration, setDuration] = useState(0)
     
-    const audioElem = useRef();
     const styles = theme.styles.global;
+
+    let testAudio = useRef(null);
+    const playPause = () => {
+        setIsPlaying(!isPlaying)
+    }
+    const muteUnmute = () => {
+        setIsMuse(!isMute)
+    }
+
+    useEffect(() => {
+        testAudio.current = new Audio(audio);
+        testAudio.current.addEventListener("timeupdate", () => {
+            setCurrentTime((testAudio.current.currentTime/100).toFixed(2));
+            const durationSeconds = testAudio.current.duration;
+            setDuration((durationSeconds/100).toFixed(2));
+            if (durationSeconds > 0) {
+                setProgress((testAudio.current.currentTime / testAudio.current.duration) * 100);
+            }
+        });
+        testAudio.current.load();
+
+        return () => {
+            testAudio.current.removeEventListener("timeupdate", () => {});
+        }
+    }, []);
 
     useEffect(() => {
         if (isPlaying) {
-            audioElem.current.play();
+            const playPromise = testAudio.current.play();
+            if (playPromise !== undefined) {
+                playPromise.then(()=> {
+                    console.log("Automatic playback started")
+                }).catch((e)=> {
+                    console.log(e)
+                });
+              }
         } else {
-            audioElem.current.pause();
+            testAudio.current.pause();
         }
         if (isMute) {
-            audioElem.current.volume = 0;
+            testAudio.current.volume = 0;
         } else {
-            audioElem.current.volume = 1;
+            testAudio.current.volume = 1;
         }
     }, [isPlaying,isMute])
-
-    const onPlaying = () => {
-        const duration = audioElem.current.duration;
-        const currentTime = audioElem.current.currentTime;
-        setProgress((currentTime / duration) * 100);
-    }
 
     return (
         <Box>
             <Flex >
-                <audio ref={audioElem} onTimeUpdate={onPlaying} />
                 <Box mr="1em" w="32px" color={styles.body.primaryFill}>
-                    {isPlaying ? <PauseIcon size={32} /> : <PlayIcon size={32} />}
+                    <IconButton 
+                        variant="no-bg"
+                        onClick={playPause}
+                        icon={isPlaying ? <PauseIcon size={32} /> : <PlayIcon size={32} />}
+                    />
                 </Box>
-                <Text color={styles.body.primaryFill} alignSelf="center">0:00/0:00</Text>
+                
+                <Text color={styles.body.primaryFill} alignSelf="center">{currentTime?currentTime:"--:--"}/{duration?duration:"--:--"}</Text>
 
                 <Box ml="1em" mr="1em" alignSelf={"center"} minW="60%">
                     <Progress width="100%" size='xs' value={progress} />
                 </Box>
 
                 <Box color={styles.body.primaryFill} w="32px">
-                    {isMute ? <AudioMuteIcon size={32} /> : <AudioIcon size={32} />}
+                    <IconButton 
+                        variant="no-bg"
+                        onClick={muteUnmute}
+                        icon={isMute ? <AudioMuteIcon size={32} /> : <AudioIcon size={32} />}
+                    />
+                    
                 </Box>
             </Flex>
         </Box>
