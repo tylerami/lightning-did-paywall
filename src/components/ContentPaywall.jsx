@@ -70,12 +70,61 @@ const ContentPaywall = ({ metadata, refreshContent }) => {
   const styles = theme.styles.global;
 
   return (
-    <Flex padding="2em" borderRadius="0.2em" width="100%" direction={"column"}>
-      <Heading size="lg" textDecoration={"underline"}>
-        This is paid content
-      </Heading>
-      <Box height="2em"></Box>
+    // <Flex padding="2em" borderRadius="0.2em" width="100%" direction={"column"}>
+    //   <Heading size="xl" textDecoration={"underline"}>
+    //     This is paid content
+    //   </Heading>
+    //   <Box height="2em"></Box>
 
+    //   <Modal size="xl" isOpen={isOpen} onClose={onClose}>
+    //     <ModalOverlay width="150em" />
+    //     <ModalContent
+    //       width="150em"
+    //       background={"black"}
+    //       border="solid 1.5px #fff"
+    //       borderRadius="0"
+    //       boxShadow="1px 1px 0px 0px #FFFFFF, 2px 2px 0px 0px #FFFFFF, 3px 3px 0px 0px #FFFFFF, 4px 4px 0px 0px #FFFFFF, 5px 5px 0px 0px #FFFFFF"
+    //     >
+    //       <ModalHeader>Lightning Invoice</ModalHeader>
+    //       <ModalCloseButton />
+    //       <ModalBody p="5em" display={"flex"} justifyContent={"center"}>
+    //         {invoice?.paymentRequest ? (
+    //           <QRCode size={"300"} value={invoice?.paymentRequest} />
+    //         ) : null}
+    //       </ModalBody>
+    //     </ModalContent>
+    //   </Modal>
+
+    //   <Flex direction={"row"}>
+    //     <Heading
+    //       w={"20em"}
+    //       _hover={{ cursor: "pointer", filter: "brightness(140%)" }}
+    //       fontWeight={500}
+    //       color={styles.brand.cyan}
+    //       size="lg"
+    //     >
+    //       {`Price: ${metadata?.paywall?.satsAmount ?? "?"} sats`}
+    //     </Heading>
+    //     <Button
+    //       variant="primary"
+    //       onClick={handleCreateInvoice}
+    //       leftIcon={
+    //         <Image
+    //           mr="0.2em"
+    //           filter={"brightness(0%);"}
+    //           height={"1em"}
+    //           src={lightningLogo}
+    //         />
+    //       }
+    //       size="lg"
+    //       w="100%"
+    //       alignSelf={"center"}
+    //     >
+    //       Unlock Now
+    //     </Button>
+    //   </Flex>
+    // </Flex>
+    <Flex textAlign={"center"} justifyContent={"center"} flexDirection={"column"}>
       <Modal size="xl" isOpen={isOpen} onClose={onClose}>
         <ModalOverlay width="150em" />
         <ModalContent
@@ -94,36 +143,32 @@ const ContentPaywall = ({ metadata, refreshContent }) => {
           </ModalBody>
         </ModalContent>
       </Modal>
-
-      <Flex direction={"row"}>
-        <Heading
-          w={"20em"}
+    <Heading
           _hover={{ cursor: "pointer", filter: "brightness(140%)" }}
-          fontWeight={500}
-          color={styles.brand.cyan}
-          size="2xl"
+          fontWeight={600}
+          color={styles.brand.yellow}
+          size="lg"
         >
-          {`Price: ${metadata?.paywall?.satsAmount ?? "?"} sats`}
+          {"Pay to unlock this content"}
+        </Heading>
+        <Heading
+          _hover={{ cursor: "pointer", filter: "brightness(140%)" }}
+          color={styles.brand.cyan}
+          size="md"
+          m="1em 0"
+        >
+          {`Price: ? sats`}
         </Heading>
         <Button
           variant="primary"
-          onClick={handleCreateInvoice}
-          leftIcon={
-            <Image
-              mr="0.2em"
-              filter={"brightness(0%);"}
-              height={"1em"}
-              src={lightningLogo}
-            />
-          }
+
           size="lg"
-          w="100%"
+          w="max-content"
           alignSelf={"center"}
         >
-          Unlock Now
+         Unlock Now
         </Button>
       </Flex>
-    </Flex>
   );
 };
 

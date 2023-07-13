@@ -2,7 +2,7 @@ import { Flex, Text } from "@chakra-ui/react";
 import React from "react";
 
 const MultilineText = ({ fontFamily, color, text }) => {
-  return (
+  return text ?
     <Flex direction="column">
       {text.split("\n").map((item, key) => {
         if (!item) return null;
@@ -13,7 +13,8 @@ const MultilineText = ({ fontFamily, color, text }) => {
         );
       })}
     </Flex>
-  );
+    :
+    <></>
 };
 
 export default MultilineText;

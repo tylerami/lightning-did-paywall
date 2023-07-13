@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, IconButton, Image, Text } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
 import MultilineText from "./MultilineText";
 
@@ -10,8 +10,11 @@ import {
   getContentMetadataFromWebNode,
 } from "../util/contentService";
 import ContentPaywall from "./ContentPaywall";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getDid } from "../util/dwnService";
+import { ArrowLeftIcon } from "@chakra-ui/icons";
+import AudioPlayer from "./AudioPlayer";
+import locked from "../assets/locked.png"
 
 const PostContentTile = ({ metadata: initialMetadata }) => {
   const styles = theme.styles.global;
@@ -44,13 +47,17 @@ const PostContentTile = ({ metadata: initialMetadata }) => {
     }
   }, [metadata]);
 
-  // Load content on mount if paid
-  useEffect(() => {
-    tryLoadContent();
-  }, []);
+
 
   // Load content on mount if paid
   useEffect(() => {
+    console.log("contentId",contentId)
+    console.log("authorDid",profileDid)
+    console.log("metadata",metadata)
+    console.log("metadata",async()=>await getContentFromWebNodeIfPaid({
+      contentId: metadata.parentId,
+      authorDid: metadata.authorDid,
+    }))
     tryLoadContent();
   }, []);
 
@@ -58,73 +65,94 @@ const PostContentTile = ({ metadata: initialMetadata }) => {
 
   return (
     <Flex
-      mt="2em"
-      padding="2em"
-      borderRadius="0.2em"
-      border="0.5px solid #444"
-      width="100%"
-      direction={"column"}
-    >
-      {content ? (
-        <>
-          <Heading fontFamily={"IBM Plex Sans"} fontWeight={400} size="xl">
-            {content.title}
-          </Heading>
-          <Box h="1em" />
-          <Heading fontFamily={"IBM Plex Sans"} fontWeight={600} size="sm">
-            {content.description}
-          </Heading>
-          <Box h="3em" />
-          <MultilineText
-            fontFamily={"IBM Plex Sans"}
-            color={styles.body.secondaryFill}
-            text={content.body}
-          />{" "}
-        </>
-      ) : (
-        <>
-          <Heading fontFamily={"IBM Plex Sans"} fontWeight={400} size="xl">
-            {metadata.title}
-          </Heading>
-          <Box h="1em" />
-          <Heading fontFamily={"IBM Plex Sans"} fontWeight={600} size="sm">
-            {metadata.description}
-          </Heading>
-          <Box h="3em" />{" "}
-          {paywall && (
-            <ContentPaywall
-              metadata={metadata}
-              refreshContent={tryLoadContent}
-            />
-          )}
-        </>
-      )}
-      {  (
-      
-        <IconButton
-          onClick={async () => {
-            await deleteContentFromWebNode(metadata.parentId);
-            navigate("/profile");
-          }}
-          variant="outline"
-          _hover={{ bg: "gray.900" }}
-          colorScheme="red"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            className="bi bi-trash"
-            viewBox="0 0 16 16"
-          >
-            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
-            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
-          </svg>
-        </IconButton>
-     
-      )}
+    mt="2em"
+    width="100%"
+    direction="column"
+  >
+    <Flex w="100%" mb="2em">
+      <Link w="100%" to="/profile">
+        <ArrowLeftIcon />
+      </Link>
+
     </Flex>
+
+    {content ? (
+      <>
+        <Heading size="xl">
+          {content.title}
+        </Heading>
+        <Box h="1em" />
+        <Heading size="sm" color={styles.body.primaryFill}>
+          {content.description}
+        </Heading>
+        <Box w="80%" borderBottom="solid 1px #fff" m="1em 0" />
+        <MultilineText
+          color={styles.body.secondaryFill}
+          text={content.body}
+        />{" "}
+        {content.type === "audio" ?
+        <AudioPlayer/>
+        :
+        <></>
+        }
+      </>
+    ) : (
+      <>
+      <Flex   width="100%" direction={"column"}>
+      <Flex>
+        <Image w={10} h={10} src={locked}/>
+        <Heading size="xl" >
+        {metadata.title}
+        </Heading>
+        
+      </Flex>
+      <Box h="1em" />
+        <Heading size="sm" color={styles.body.primaryFill}>
+        {metadata.description}
+        </Heading>
+        <Box w="100%" borderBottom="solid 1px #fff" m="1em 0" />
+      <Box height="2em"></Box>
+{paywall && (
+          <ContentPaywall
+            metadata={metadata}
+            refreshContent={tryLoadContent}
+          />
+        )}
+      
+    </Flex>
+      </>
+    )}
+    {profileDid === getDid() ?
+      <IconButton
+        onClick={async () => {
+          await deleteContentFromWebNode(metadata.parentId);
+          navigate("/profile");
+        }}
+        variant="no-bg"
+        p="0"
+        m="1em 0"
+        h="min-content"
+        w="18px"
+        minW="18px"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          fill="currentColor"
+          className="bi bi-trash"
+          viewBox="0 0 16 16"
+        >
+          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+          <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+        </svg>
+      </IconButton>
+
+      :
+      <></>
+    }
+  </Flex>
+
   );
 };
 
