@@ -87,7 +87,7 @@ const ContentPaywall = ({ metadata, refreshContent }) => {
           <ModalCloseButton />
           <ModalBody p="5em" display={"flex"} justifyContent={"center"}>
             {invoice?.paymentRequest ? (
-              <QRCode size={"300"} value={invoice?.paymentRequest} />
+              <QRCode size={"200"} value={invoice?.paymentRequest} />
             ) : null}
           </ModalBody>
         </ModalContent>
