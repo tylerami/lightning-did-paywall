@@ -38,7 +38,7 @@ function App() {
         />
       </Modal>
       <Routes>
-        <Route path="/" element={<Navigate to="/createPost" />} />
+        <Route path="/" element={<Navigate to="/search" />} />
         <Route path="/createPost" element={<CreatePostPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route

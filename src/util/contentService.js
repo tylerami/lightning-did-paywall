@@ -286,7 +286,7 @@ export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
 
   return {
     ...(await flattenRecord(contentRecord)),
-    audio: await audioRecord.data?.blob(),
+    audio: await audioRecord?.data?.blob(),
   };
 }
 
