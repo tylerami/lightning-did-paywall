@@ -33,7 +33,7 @@ export async function publishContentToWebNode({
         did: userDid,
       },
       message: {
-        published: false,
+        published: true,
         schema: contentSchema,
         protocol: protocolUri,
         protocolPath: "content",
@@ -130,7 +130,7 @@ export async function publishContentToWebNode({
       await web5.dwn.records.create({
         data: audio,
         message: {
-          published: false,
+          published: true,
           contextId: contentRecord.id,
           parentId: contentRecord.id,
           schema: audioSchema,
@@ -215,6 +215,8 @@ async function getContentRecord({ contentId, authorDid }) {
     },
   };
 
+  console.log('content record request: ', authorDid);
+
   if (authorDid && authorDid !== userDid) {
     request.from = authorDid;
   }
@@ -263,6 +265,10 @@ export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
     return null;
   }
 
+  const subscriptionRecord = await getSubscriptionRecord(contentId);
+  console.log("subscriptionRecord: ", subscriptionRecord);
+  if (!subscriptionRecord) return null;
+
   const contentRecord = await getContentRecord({ contentId, authorDid });
   if (!contentRecord) return null;
 
@@ -276,6 +282,7 @@ export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
 }
 
 export async function registerSubscriptionInWebNode({
+  contentId,
   metadataId,
   authorDid,
   invoice,
@@ -284,38 +291,17 @@ export async function registerSubscriptionInWebNode({
     throw new Error("Invoice paymentRequest is required");
   if (!invoice?.paymentHash) throw new Error("Invoice paymentHash is required");
 
-  console.log(
-    "registerSubscriptionInWebNode: ",
-    metadataId,
-    authorDid,
-    invoice
-  );
-
-  const { record: metadataRecord, status: metadataStatus } =
-    await web5.dwn.records.read({
-      from: authorDid,
-      message: {
-        recordId: metadataId,
-      },
-    });
-
-    console.log("metadataRecord: ", metadataRecord, metadataStatus);
-
-  const {status: sendStatus} = await metadataRecord.send(userDid);
-  console.log("sendStatus: ", sendStatus);
-
   var { record, status } = await web5.dwn.records.create({
     data: {
       paymentRequest: invoice.paymentRequest,
       preimage: invoice.preimage,
       paymentHash: invoice.paymentHash,
       contentOwnerDid: authorDid,
+      contentId: contentId,
     },
     message: {
       protocol: protocolUri,
-      protocolPath: "content/metadata/subscription",
-      contextId: metadataId,
-      parentId: metadataId,
+      protocolPath: "subscription",
       recipient: userDid,
       schema: subscriptionSchema,
     },
@@ -327,13 +313,22 @@ export async function registerSubscriptionInWebNode({
     return;
   }
 
-  //const {status: sendToUserStatus} = await record.send(userDid);
-  const { status: sendToAuthorStatus } = await record.send(authorDid);
-
-  //console.log("sendToUserStatus: ", sendToUserStatus);
-  console.log("sendToAuthorStatus: ", sendToAuthorStatus);
+  const { status: sendToUserStatus } = await record.send(userDid);
+  console.log("sendToUserStatus: ", sendToUserStatus);
 
   return status;
+}
+
+async function getSubscriptionRecord(contentId) {
+  const records = await queryRecords({
+    schema: subscriptionSchema,
+  });
+
+  if (!records) return null;
+
+  return (await Promise.all(records.map((r) => flattenRecord(r))))
+    ?.filter((r) => r.contentId === contentId)
+    ?.at(0);
 }
 
 export async function deleteContentFromWebNode(contentId) {

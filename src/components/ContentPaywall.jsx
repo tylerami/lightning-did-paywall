@@ -38,8 +38,7 @@ const ContentPaywall = ({ metadata, refreshContent }) => {
       console.log('metadata', metadata);
       const isPaid = await verifyInvoiceAndRegisterIfPaid({
         invoice,
-        metadataId: metadata.id,
-        authorDid: metadata.did,
+       metadata
       });
       console.log("isPaid: ", isPaid);
       if (isPaid) {

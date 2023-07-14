@@ -29,6 +29,7 @@ const PostContentTile = ({ metadata: initialMetadata }) => {
 
   async function getMetadata() {
     if (metadata) return metadata;
+
     const metadataUpdate = await getContentMetadataFromWebNode({
       contentId,
       authorDid: profileDid,
@@ -43,7 +44,7 @@ const PostContentTile = ({ metadata: initialMetadata }) => {
 
     const contentUpdate = await getContentFromWebNodeIfPaid({
       contentId: metadata.parentId,
-      authorDid: metadata.authorDid,
+      authorDid: metadata.did,
     });
     setContent(contentUpdate);
     if (!contentUpdate) {
