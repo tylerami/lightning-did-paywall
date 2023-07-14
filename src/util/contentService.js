@@ -193,19 +193,23 @@ async function getContentMetadataRecord({ contentId, authorDid }) {
 
 export async function getContentMetadataFromWebNode({ contentId, authorDid }) {
   const record = await getContentMetadataRecord({ contentId, authorDid });
-
   if (!record) return null;
 
+  const paywallRecord = await getPaywallRecord({ contentId, authorDid });
+
+  return {
+    ...(await flattenRecord(record)),
+    paywall: paywallRecord,
+  };
+}
+
+async function getPaywallRecord({ contentId, authorDid }) {
   const paywallRecord = await queryRecords({
     schema: paywallSchema,
     parentId: contentId,
     from: authorDid,
   });
-
-  return {
-    ...(await flattenRecord(record)),
-    paywall: await flattenRecord(paywallRecord?.at(0)),
-  };
+  return await flattenRecord(paywallRecord?.at(0));
 }
 
 async function getContentRecord({ contentId, authorDid }) {
@@ -215,7 +219,7 @@ async function getContentRecord({ contentId, authorDid }) {
     },
   };
 
-  console.log('content record request: ', authorDid);
+  console.log("content record request: ", authorDid);
 
   if (authorDid && authorDid !== userDid) {
     request.from = authorDid;
@@ -265,9 +269,15 @@ export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
     return null;
   }
 
-  const subscriptionRecord = await getSubscriptionRecord(contentId);
-  console.log("subscriptionRecord: ", subscriptionRecord);
-  if (!subscriptionRecord) return null;
+  if (authorDid !== userDid) {
+    const paywall = await getPaywallRecord({ contentId, authorDid });
+
+    if (paywall) {
+      const subscriptionRecord = await getSubscriptionRecord(contentId);
+      console.log("subscriptionRecord: ", subscriptionRecord);
+      if (!subscriptionRecord) return null;
+    }
+  }
 
   const contentRecord = await getContentRecord({ contentId, authorDid });
   if (!contentRecord) return null;
