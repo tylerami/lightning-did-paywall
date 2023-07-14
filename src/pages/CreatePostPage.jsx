@@ -260,7 +260,7 @@ const CreatePostPage = () => {
             />
           </Box>
         )}
-        <Box h={"2em"} />
+        <Box h={"1em"} />
         <Flex alignItems={"center"} >
           {" "}
           <Heading size="md">Paywall</Heading>
