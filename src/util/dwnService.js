@@ -28,28 +28,27 @@ async function configureProtocol() {
     return;
   }
 
-  console.log(  "protocols: ",  protocols);
+  console.log("protocols: ", protocols);
   // protocol already exists
   if (protocols.length > 0) {
     console.log("protocol already exists");
-  //  return;
+    //  return;
   }
 
   try {
-    const { protocol,  status: configureStatus } = await web5.dwn.protocols.configure({
-      message: {
-        definition: paywallProtocol,
-      },
-    });
+    const { protocol, status: configureStatus } =
+      await web5.dwn.protocols.configure({
+        message: {
+          definition: paywallProtocol,
+        },
+      });
     console.log("configure protocol status", configureStatus);
 
-    const {status: sendProtocolStatus} = await protocol.send(userDid);
+    const { status: sendProtocolStatus } = await protocol.send(userDid);
     console.log("send protocol status: ", sendProtocolStatus);
   } catch (e) {
     console.log("error configuring protocol: ", e);
   }
-
-
 }
 
 configureProtocol();
@@ -59,38 +58,51 @@ export async function flattenRecord(record) {
   if (!record.data) return null;
 
   var data;
-  console.log("record data: ", record);
+  console.log("record data: ", record.protocolPath,  record);
   try {
-   data = await record?.data?.json();
+    data = await record?.data?.json();
+    return {
+      id: record.id,
+      parentId: record.parentId,
+      authorDid: record.author,
+      recipientDid: record.recipient,
+      ...data,
+    };
   } catch (e) {
-    console.log("error parsing record data: ", e)
+    console.log("could not parse data as json: ", e);
   }
+
+  if (!data) {
+    try {
+      data = await record?.data?.blob();
+    } catch (e) {
+      console.log("could not parse data as json or blob: ", e);
+    }
+  }
+
   return {
     id: record.id,
     parentId: record.parentId,
     authorDid: record.author,
     recipientDid: record.recipient,
-    ...data,
+    data,
   };
 }
 
-export async function queryRecords({
-  schema,
-  dataFormat = "application/json",
-  from,
-  parentId,
-}) {
+export async function queryRecords({ schema, dataFormat, from, parentId }) {
   var filter = {
     protocol: protocolUri,
     schema,
-    dataFormat,
   };
   if (parentId) {
     filter.parentId = parentId;
     filter.contextId = parentId;
   }
+  if (dataFormat) {
+    filter.dataFormat = dataFormat;
+  }
 
-  console.log("Querying with filter: ", filter);
+  console.log("Querying with filter:  ", filter.schema, filter);
   var query = {
     message: {
       filter,
@@ -102,7 +114,7 @@ export async function queryRecords({
   }
   try {
     const result = await web5.dwn.records.query(query);
-    console.log(result);
+    console.log("query result: ", filter.schema, result);
     return result?.records;
   } catch (e) {
     console.log("error querying records: ", e);
@@ -146,9 +158,9 @@ export async function upsertRecord({
     }
 
     const { status: sendStatus } = await record.send(userDid);
-    console.log("send status: ", sendStatus);
+    console.log("send status: ", protocolPath,  sendStatus);
 
-    return { record, updateStatus };
+    return { record, status: updateStatus };
   } else {
     console.log("creating record with type: ", schema);
     console.log("data is: ", data);
@@ -174,7 +186,7 @@ export async function upsertRecord({
       return { record: null, status };
     } else {
       const { status: sendStatus } = await createdRecord.send(userDid);
-      console.log("send status: ", sendStatus);
+      console.log("send status: ", protocolPath,  sendStatus);
     }
 
     return { record: createdRecord, status };

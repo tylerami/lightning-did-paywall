@@ -41,7 +41,6 @@ const ProfileEditModal = ({ onClose, profile, setProfile }) => {
       displayImage: selectedImage,
     };
     setProfileInWebNode(profileUpdate);
-    console.log('profileUpdate', profileUpdate  );
     setProfile({...profileUpdate, displayImage: selectedImage ?? profile?.displayImage});
     onClose();
   };

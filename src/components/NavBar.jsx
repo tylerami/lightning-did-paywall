@@ -35,7 +35,7 @@ const NavBar = ({profile}) => {
       <Spacer />
       <Box w={"5em"}></Box>
       <Link to="/profile" mr="2em" > {profile?.displayImage ? (
-          <Image  borderRadius="100%" mr="2em" src={URL.createObjectURL(profile?.displayImage)} w={12} />
+          <Image  borderRadius="100%" mr="2em" src={URL.createObjectURL(profile?.displayImage)} w={12} h={12} />
       ) : (
           <Image  mr="2em" src={person} w={12} />
       )}  </Link>

@@ -96,6 +96,7 @@ const CreatePostPage = () => {
   }
 
   async function handlePublish() {
+    if (!title || title.length === 0) return;
     if (
       await publishContentToWebNode({
         title,
@@ -205,7 +206,6 @@ const CreatePostPage = () => {
           </Heading>
           <Box w={"1em"} />
           <Switch
-          
             isChecked={typeIsAudio()}
             onChange={() => toggleContentType()}
             colorScheme="gray"

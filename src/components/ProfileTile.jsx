@@ -12,21 +12,19 @@ const ProfileTile = ({ profile, metadataList }) => {
 
     if(!profile){return null}
 
-    console.log('profile', profile);
 
     const userDid = profile.did;
     const displayName = profile?.username;
     const userDisplayName = displayName || userDid?.substring(0, 20) + "...";
     const postCount = metadataList?.length;
 
-    console.log(profile)
 
 
     return (
         <Flex p="1em" mb="1em"  >
             <Flex w="100%">
             {profile?.displayImage ? (
-                    <Image src={URL.createObjectURL(profile?.displayImage)} h={24} w={24} />
+                    <Image src={URL.createObjectURL(profile?.displayImage)} br="100%" h={24} w={24} />
                 ) : (
                     <Image src={person} h={24} w={24} />
                 )}

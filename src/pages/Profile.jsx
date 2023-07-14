@@ -14,12 +14,10 @@ import {
   useClipboard,
 } from "@chakra-ui/react";
 import person from "../assets/person.png";
-import locked from "../assets/locked.png";
-import lightningLogo from "../assets/lightningLogo.png";
 
 import theme from "../theme";
 import { getDid } from "../util/dwnService";
-import { ArrowLeftIcon, CopyIcon, EditIcon } from "@chakra-ui/icons";
+import {  CopyIcon, EditIcon } from "@chakra-ui/icons";
 import { Link, Route, Routes, useParams } from "react-router-dom";
 import { getAllContentMetadataFromWebNode } from "../util/contentService";
 import PostMetadataTileList from "../components/PostMetadataTileList";
@@ -29,13 +27,11 @@ import { getProfileFromWebNode } from "../util/profileService";
 const Profile = ({ openEditProfileModal, profile: initialProfile }) => {
   const styles = theme.styles.global;
 
-  console.log("passed profile: ", initialProfile);
 
   const [profile, setProfile] = useState(initialProfile);
 
   const params = useParams();
 
-  console.log(params);
 
   const userDid = params.profileDid ?? getDid();
 
@@ -54,7 +50,6 @@ const Profile = ({ openEditProfileModal, profile: initialProfile }) => {
   useEffect(() => {
     setProfile(initialProfile);
 
-    console.log("profile updated: ", initialProfile);
   }, [initialProfile]);
 
   const [contentList, setContentList] = useState([]);
@@ -88,6 +83,7 @@ const Profile = ({ openEditProfileModal, profile: initialProfile }) => {
             borderRadius="100%"
             src={URL.createObjectURL(profile?.displayImage)}
             w={32}
+            h={32}
           />
         ) : (
           <Image src={person} w={32} />

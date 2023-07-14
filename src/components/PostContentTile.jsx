@@ -62,14 +62,11 @@ const PostContentTile = ({ metadata: initialMetadata }) => {
 
   // Load content on mount if paid
   useEffect(() => {
-    console.log("contentId", contentId);
-    console.log("authorDid", profileDid);
-    console.log("metadata", metadata);
-
     tryLoadContent();
   }, []);
 
   if (!metadata) return null;
+
 
   return (
     <Flex mt="2em" width="100%" direction="column">
@@ -80,30 +77,13 @@ const PostContentTile = ({ metadata: initialMetadata }) => {
       </Flex>
 
       {content ? (
-        <>
+        <><Flex>
           <Heading size="xl">{content.title}</Heading>
-          <Box h="1em" />
-          <Heading size="sm" color={styles.body.primaryFill}>
-            {content.description}
-          </Heading>
-          <Box w="80%" borderBottom="solid 1px #fff" m="1em 0" />
-          <MultilineText
-            color={styles.body.secondaryFill}
-            text={content.body}
-          />{" "}
-          {content.type === "audio" ? <AudioPlayer /> : <></>}
-        </>
-      ) : (
-        <>
-          <Flex width="100%" direction={"column"}>
-            <Flex alignItems={"center"}>
-              <Image m={2} w={10} h={10} src={locked} />
-              <Heading size="xl">{metadata.title}</Heading>
-              <Spacer />
-              {profileDid === getDid() ? (
+          <Spacer />
+              {profileDid === getDid() && (
                 <IconButton
                   onClick={async () => {
-                    await deleteContentFromWebNode(metadata.parentIkd);
+                    await deleteContentFromWebNode(metadata.parentId);
                     navigate("/profile");
                   }}
                   variant="no-bg"
@@ -125,9 +105,26 @@ const PostContentTile = ({ metadata: initialMetadata }) => {
                     <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
                   </svg>
                 </IconButton>
-              ) : (
-                <></>
-              )}
+              ) }
+              </Flex>
+          <Box h="1em" />
+          <Heading size="sm" color={styles.body.primaryFill}>
+            {content.description}
+          </Heading>
+          <Box w="80%" borderBottom="solid 1px #fff" m="1em 0" />
+          <MultilineText
+            color={styles.body.secondaryFill}
+            text={content.body}
+          />{" "}
+          {content.type === "audio" ? <AudioPlayer audio={content.audio}/> : <></>}
+        </>
+      ) : (
+        <>
+          <Flex width="100%" direction={"column"}>
+            <Flex alignItems={"center"}>
+              <Image m={2} w={10} h={10} src={locked} />
+              <Heading size="xl">{metadata.title}</Heading>
+             
             </Flex>
             <Box h="1em" />
             <Heading size="sm" color={styles.body.primaryFill}>

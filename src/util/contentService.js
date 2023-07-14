@@ -41,7 +41,6 @@ export async function publishContentToWebNode({
       },
     });
 
-  console.log("content record: ", contentRecord, contentStatus);
   if (contentStatus.code !== 202) {
     console.log(
       "Error creating content record, contentStatus: ",
@@ -74,7 +73,6 @@ export async function publishContentToWebNode({
       },
     });
 
-  console.log("metadata record: ", metadataRecord, metadataStatus);
 
   if (metadataStatus.code !== 202) {
     console.log(
@@ -145,6 +143,9 @@ export async function publishContentToWebNode({
     if (audioStatus.code !== 202) {
       console.log("Error creating audio record, audioStatus: ", audioStatus);
       return false;
+    } else {
+      const { status: audioSendStatus } = await audioRecord.send(userDid);
+      console.log("audio send status: ", audioSendStatus);
     }
   }
 
@@ -166,7 +167,6 @@ export async function getAllContentMetadataFromWebNode(authorDid) {
         parentId: rec.parentId,
         from: authorDid,
       });
-      console.log("paywallRecord: ", paywallRecord);
       return {
         ...(await flattenRecord(rec)),
         paywall: await flattenRecord(paywallRecord?.at(0)),
@@ -219,13 +219,11 @@ async function getContentRecord({ contentId, authorDid }) {
     },
   };
 
-  console.log("content record request: ", authorDid);
 
   if (authorDid && authorDid !== userDid) {
     request.from = authorDid;
   }
 
-  console.log("request: ", request);
 
   const { record: contentRecord, status: contentStatus } =
     await web5.dwn.records.read(request);
@@ -248,6 +246,8 @@ async function getAudioRecord({ contentId, authorDid }) {
     parentId: contentId,
     from: authorDid,
   });
+
+  console.log("audio records: ", records);
 
   const record = records?.at(0);
   if (!record) {
@@ -274,7 +274,6 @@ export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
 
     if (paywall) {
       const subscriptionRecord = await getSubscriptionRecord(contentId);
-      console.log("subscriptionRecord: ", subscriptionRecord);
       if (!subscriptionRecord) return null;
     }
   }
@@ -287,7 +286,7 @@ export async function getContentFromWebNodeIfPaid({ contentId, authorDid }) {
 
   return {
     ...(await flattenRecord(contentRecord)),
-    audio: await flattenRecord(audioRecord),
+    audio: await audioRecord.data?.blob(),
   };
 }
 

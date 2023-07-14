@@ -15,7 +15,7 @@ const PostMetadataTileList = ({
   const max = expanded ? 100 : 3;
 
   const filteredContent = contentList
-    .filter((post, i) => i < max && post.type === type)
+    .filter((post, i) => post.type === type)
     .map((post, i) => {
       return <PostMetadataTile key={i} metadata={post} />;
     });
@@ -33,14 +33,14 @@ const PostMetadataTileList = ({
         {type === "text" ? "Blog Posts" : "Podcasts"}
       </Heading>
       <Box h="2em" />
-      {filteredContent}
+      {filteredContent.filter((post, i) => i < max)}
       {expanded && (
-        <Button variant="primary" maxW="max-content" onClick={toggleExpanded}>
+        <Button variant="primary" maxW="max-content" onClick={() => toggleExpanded(!expanded)}>
           View less
         </Button>
       )}
       {!expanded && filteredContent.length > max && (
-        <Button variant="primary" maxW="max-content" onClick={toggleExpanded}>
+        <Button variant="primary" maxW="max-content" onClick={() => toggleExpanded(!expanded)}>
           View more
         </Button>
       )}
