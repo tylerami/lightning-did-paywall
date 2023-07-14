@@ -12,7 +12,13 @@ const AudioPlayer = ({ audio: audioBlob }) => {
 
   const styles = theme.styles.global;
 
-  const audio = URL.createObjectURL(audioBlob);
+  var audio;
+
+  try {
+    audio = URL.createObjectURL(audioBlob);
+  } catch (e) {
+    console.log("Error in creating audio url", e);
+  }
 
   let testAudio = useRef(null);
   const playPause = () => {
@@ -26,7 +32,7 @@ const AudioPlayer = ({ audio: audioBlob }) => {
     testAudio.current = new Audio(audio);
     testAudio.current.addEventListener("timeupdate", () => {
       setCurrentTime((testAudio.current.currentTime / 100).toFixed(2));
-      const durationSeconds =  testAudio.current.duration;
+      const durationSeconds = testAudio.current.duration;
       setDuration((durationSeconds / 100).toFixed(2));
       if (durationSeconds > 0) {
         setProgress(
@@ -70,7 +76,13 @@ const AudioPlayer = ({ audio: audioBlob }) => {
           <IconButton
             variant="no-bg"
             onClick={playPause}
-            icon={isPlaying ? <PauseIcon size={32} /> : <PlayIcon opacity={audio ?  1 : 0} size={32} />}
+            icon={
+              isPlaying ? (
+                <PauseIcon size={32} />
+              ) : (
+                <PlayIcon opacity={audio ? 1 : 0} size={32} />
+              )
+            }
           />
         </Box>
 
@@ -102,7 +114,7 @@ const PlayIcon = ({ size, opacity }) => {
       xmlns="http://www.w3.org/2000/svg"
       width={size}
       height={size}
-      opacity={opacity ?? 1} 
+      opacity={opacity ?? 1}
       fill="currentColor"
       className="bi bi-play-fill"
       viewBox="0 0 16 16"

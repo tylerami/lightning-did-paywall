@@ -17,7 +17,7 @@ import person from "../assets/person.png";
 
 import theme from "../theme";
 import { getDid } from "../util/dwnService";
-import {  CopyIcon, EditIcon } from "@chakra-ui/icons";
+import { CopyIcon, EditIcon } from "@chakra-ui/icons";
 import { Link, Route, Routes, useParams } from "react-router-dom";
 import { getAllContentMetadataFromWebNode } from "../util/contentService";
 import PostMetadataTileList from "../components/PostMetadataTileList";
@@ -27,11 +27,9 @@ import { getProfileFromWebNode } from "../util/profileService";
 const Profile = ({ openEditProfileModal, profile: initialProfile }) => {
   const styles = theme.styles.global;
 
-
   const [profile, setProfile] = useState(initialProfile);
 
   const params = useParams();
-
 
   const userDid = params.profileDid ?? getDid();
 
@@ -41,8 +39,9 @@ const Profile = ({ openEditProfileModal, profile: initialProfile }) => {
   useEffect(() => {
     const getProfile = async () => {
       const profileUpdate = await getProfileFromWebNode(userDid);
-      console.log("PROFILE UPDATE", profileUpdate);
-      setProfile(profileUpdate);
+      if (profileUpdate) {
+        setProfile(profileUpdate);
+      }
     };
 
     getProfile();
@@ -50,8 +49,6 @@ const Profile = ({ openEditProfileModal, profile: initialProfile }) => {
 
   useEffect(() => {
     setProfile(initialProfile);
-    console.log("SETTING INITIAL PROFILE", initialProfile);
-
   }, [initialProfile]);
 
   const [contentList, setContentList] = useState([]);
