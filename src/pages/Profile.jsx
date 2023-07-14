@@ -41,14 +41,16 @@ const Profile = ({ openEditProfileModal, profile: initialProfile }) => {
   useEffect(() => {
     const getProfile = async () => {
       const profileUpdate = await getProfileFromWebNode(userDid);
+      console.log("PROFILE UPDATE", profileUpdate);
       setProfile(profileUpdate);
     };
 
     getProfile();
-  }, [userDid]);
+  }, [userDid, params]);
 
   useEffect(() => {
     setProfile(initialProfile);
+    console.log("SETTING INITIAL PROFILE", initialProfile);
 
   }, [initialProfile]);
 

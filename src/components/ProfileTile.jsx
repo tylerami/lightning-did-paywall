@@ -24,7 +24,7 @@ const ProfileTile = ({ profile, metadataList }) => {
         <Flex p="1em" mb="1em"  >
             <Flex w="100%">
             {profile?.displayImage ? (
-                    <Image src={URL.createObjectURL(profile?.displayImage)} br="100%" h={24} w={24} />
+                    <Image src={URL.createObjectURL(profile?.displayImage)} borderRadius="100%" h={24} w={24} />
                 ) : (
                     <Image src={person} h={24} w={24} />
                 )}
