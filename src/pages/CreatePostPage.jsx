@@ -19,6 +19,7 @@ import {
   useClipboard,
   InputGroup,
   InputRightElement,
+  ButtonGroup,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { CopyIcon } from "@chakra-ui/icons";
@@ -171,10 +172,28 @@ const CreatePostPage = () => {
             </InputRightElement>
           </InputGroup>
 
-          <Box w="0.5em"></Box>
         </Flex>
+        <Box h="2em" mb="2em" borderBottom="solid 1px" borderColor={styles.brand.yellow}></Box>
 
-        <Box h="2em"></Box>
+        <Flex alignItems={"center"}>
+          {" "}
+          <Heading opacity={typeIsText() ? 1 : 0.6} size="lg">
+            Blog Post
+          </Heading>
+          <Box w={"1em"} />
+          <Switch
+            isChecked={typeIsAudio()}
+            onChange={() => toggleContentType()}
+            colorScheme="cyan"
+            size="lg"
+          />
+          <Box w={"1em"} />
+          <Heading opacity={typeIsAudio() ? 1 : 0.6} size="lg">
+            Podcast
+          </Heading>
+          
+        </Flex>
+        <Box h="1em"></Box>
         <Input
           value={title}
           p="1rem"
@@ -199,24 +218,7 @@ const CreatePostPage = () => {
           border="1px solid lightgray"
         />
         <Box h={"1em"} />
-        <Flex alignItems={"center"} justifyContent={"center"}>
-          {" "}
-          <Heading opacity={typeIsText() ? 1 : 0.6} size="lg">
-            Blog Post
-          </Heading>
-          <Box w={"1em"} />
-          <Switch
-            isChecked={typeIsAudio()}
-            onChange={() => toggleContentType()}
-            colorScheme="gray"
-            size="lg"
-          />
-          <Box w={"1em"} />
-          <Heading opacity={typeIsAudio() ? 1 : 0.6} size="lg">
-            Podcast
-          </Heading>
-        </Flex>
-        <Box h={"1em"} />
+
         {typeIsText() && (
           <Textarea
             minHeight={"15em"}
@@ -258,15 +260,15 @@ const CreatePostPage = () => {
             />
           </Box>
         )}
-        <Box h={"2em"} />
-        <Flex alignItems={"center"} justifyContent={"center"}>
+        <Box h={"1em"} />
+        <Flex alignItems={"center"} >
           {" "}
           <Heading size="md">Paywall</Heading>
           <Box w={"1em"} />
           <Switch
             isChecked={paywallActive}
             onChange={() => togglePaywall()}
-            colorScheme="twitter"
+            colorScheme="cyan"
             size="md"
           />
           {paywallActive && (
