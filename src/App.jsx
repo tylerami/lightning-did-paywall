@@ -16,31 +16,39 @@ function App() {
 
   useEffect(() => {
     async function checkProfile() {
-      await getProfileFromWebNode().then((existingProfile) =>
-        setProfile(existingProfile)
-      ).catch((e) => console.log(e));
-      if (!profile) {
+      const existingProfile = await getProfileFromWebNode();
+      setProfile(existingProfile);
+
+      if (!existingProfile) {
         onOpen();
       }
     }
     checkProfile();
   }, [onOpen]);
 
-
-
   return (
     <Flex direction={"column"}>
       <NavBar profile={profile} />
       <Modal size="xl" isOpen={isOpen} onClose={onClose}>
         <ModalOverlay width="150em" />
-        <ProfileEditModal profile={profile} setProfile={setProfile} onClose={onClose} />
+        <ProfileEditModal
+          profile={profile}
+          setProfile={setProfile}
+          onClose={onClose}
+        />
       </Modal>
       <Routes>
         <Route path="/" element={<Navigate to="/createPost" />} />
         <Route path="/createPost" element={<CreatePostPage />} />
         <Route path="/search" element={<SearchPage />} />
-        <Route path="/profile/*"  element={<Profile profile={profile} openEditProfileModal={onOpen} />} ></Route>
-        <Route path="/profile/:profileDid/*" element={<Profile  openEditProfileModal={onOpen} />} ></Route>
+        <Route
+          path="/profile/*"
+          element={<Profile profile={profile} openEditProfileModal={onOpen} />}
+        ></Route>
+        <Route
+          path="/profile/:profileDid/*"
+          element={<Profile openEditProfileModal={onOpen} />}
+        ></Route>
       </Routes>
     </Flex>
   );
