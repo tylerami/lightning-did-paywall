@@ -184,7 +184,7 @@ const CreatePostPage = () => {
           <Switch
             isChecked={typeIsAudio()}
             onChange={() => toggleContentType()}
-            colorScheme="gray"
+            colorScheme="cyan"
             size="lg"
           />
           <Box w={"1em"} />
@@ -268,8 +268,8 @@ const CreatePostPage = () => {
           <Switch
             isChecked={paywallActive}
             onChange={() => togglePaywall()}
-            colorScheme="twitter"
-            size="lg"
+            colorScheme="cyan"
+            size="md"
           />
           {paywallActive && (
             <Flex ml={"2em"} direction={"column"}>
