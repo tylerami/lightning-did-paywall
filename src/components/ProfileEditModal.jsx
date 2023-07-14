@@ -38,10 +38,10 @@ const ProfileEditModal = ({ onClose, profile, setProfile }) => {
       username: displayName,
       bio,
       lightningAddress,
-      displayImage: selectedImage,
+      displayImage: selectedImage ?? profile?.displayImage
     };
     setProfileInWebNode(profileUpdate);
-    setProfile({...profileUpdate, displayImage: selectedImage ?? profile?.displayImage});
+    setProfile(profileUpdate);
     onClose();
   };
 
